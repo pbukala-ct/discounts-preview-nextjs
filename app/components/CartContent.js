@@ -22,7 +22,7 @@ export default function CartContent({ cartData, isLoading, onRemoveDiscount }) {
   if (!cartData) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <p className="text-gray-600">No cart data loaded. Please enter a Cart ID above.</p>
+        <p className="text-gray-600">No cart loaded. Selected a customer with an active cart.</p>
       </div>
     );
   }
