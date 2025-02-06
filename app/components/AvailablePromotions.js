@@ -205,17 +205,17 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Available Promotions</h2>
+      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Available Discounts</h2>
       <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-200 leading-relaxed" >
-        Promotions are applied automatically based on the configuration ('automatic') or manually based on the customer choice
+        Discounts that are applied automatically based on the configuration ('automatic') or manually using 'apply discount' button.
       </p>
       <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-100 leading-relaxed" >
           Your new  <span class="text-grey-900 font-semibold">cart total</span> and the potential <span class="text-grey-900 font-semibold">discounts</span> including all active auto-triggered promotions if you apply this promotion. Breakdown shows how discount is applied, on total cart price or on line item level      </p>
       <div className="p-6">
         {isLoading ? (
-          <p className="text-center text-gray-600">Loading promotions...</p>
+          <p className="text-center text-gray-600">Loading discounts...</p>
         ) : promotions.length === 0 ? (
-          <p className="text-center text-gray-600">No promotions available.</p>
+          <p className="text-center text-gray-600">No discounts available.</p>
         ) : (
           promotions.map((promo, index) => (
             <div key={promo.id} className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">

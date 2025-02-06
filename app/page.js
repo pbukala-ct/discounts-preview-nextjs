@@ -183,7 +183,7 @@ export default function Home() {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Discounts Preview Calculator</h1>
           <Image
             src="/logo.png"
-            alt="E-Commerce Dashboard Logo"
+            alt="commercetools"
             width={170}
             height={60}
             className="mx-auto"
@@ -192,12 +192,11 @@ export default function Home() {
 
         <CartIdForm onSubmit={loadCartData} />
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
-            <CartContent cartData={cartData} isLoading={isLoading}  onRemoveDiscount={removeDiscountCode}/>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+          <div className="md:col-span-3">
+            <CartContent cartData={cartData} isLoading={isLoading} onRemoveDiscount={removeDiscountCode}/>
           </div>
-          <div className="space-y-8">
+          <div className="md:col-span-2 space-y-8">
             <AvailablePromotions 
             cartData={cartData} 
             onApplyDiscount={applyDiscountCode} 

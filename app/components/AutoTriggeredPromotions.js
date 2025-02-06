@@ -54,9 +54,9 @@ export default function AutoTriggeredPromotions() {
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Auto-Triggered Promotions</h2>
+      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Auto-Triggered Discount</h2>
       <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-100">
-      Promotions are applied automatically depending on the 'active' and 'stackable' state.<span class="text-grey-900 font-semibold">Customers can not turn it off.</span>
+      Discounts that are applied automatically depending on the 'active' and 'stackable' state.<span class="text-grey-900 font-semibold"></span>
       </p>
       <div className="p-6">
         {isLoading ? (
