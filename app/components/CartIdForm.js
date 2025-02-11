@@ -36,13 +36,18 @@ export default function CartIdForm({ onSubmit }) {
   const handleCustomerSelect = (customer) => {
     setSelectedCustomer(customer);
     setIsOpen(false);
-    // Pass the customer.id to maintain the expected contract with parent component
     onSubmit(customer.id, applyBestPromo);
+  };
+
+  const handleRefresh = () => {
+    if (selectedCustomer) {
+      onSubmit(selectedCustomer.id, applyBestPromo);
+    }
   };
 
   return (
     <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
-      <div className="flex items-start space-x-6"> {/* Added flex container with spacing */}
+      <div className="flex items-start space-x-6">
         <div className="relative w-96">
           <button
             type="button"
@@ -73,8 +78,18 @@ export default function CartIdForm({ onSubmit }) {
             </div>
           )}
         </div>
+
+        <button
+          onClick={handleRefresh}
+          disabled={!selectedCustomer}
+          className="h-10 px-4 text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200 focus:ring-gray-300 focus:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
   
-        <div className="flex-shrink-0"> {/* Added flex-shrink-0 to prevent checkbox from shrinking */}
+        <div className="flex-shrink-0">
           <label className="flex items-center space-x-2 text-sm text-gray-700">
             <input
               type="checkbox"
@@ -82,7 +97,7 @@ export default function CartIdForm({ onSubmit }) {
               onChange={(e) => setApplyBestPromo(e.target.checked)}
               className="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
             />
-            <span>Apply best available promo automatically</span>
+            <span>Apply best available discount automatically</span>
           </label>
         </div>
       </div>

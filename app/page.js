@@ -192,11 +192,11 @@ export default function Home() {
 
         <CartIdForm onSubmit={loadCartData} />
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
           <div className="md:col-span-3">
             <CartContent cartData={cartData} isLoading={isLoading} onRemoveDiscount={removeDiscountCode}/>
           </div>
-          <div className="md:col-span-2 space-y-8">
+          <div className="md:col-span-3 space-y-8">
             <AvailablePromotions 
             cartData={cartData} 
             onApplyDiscount={applyDiscountCode} 

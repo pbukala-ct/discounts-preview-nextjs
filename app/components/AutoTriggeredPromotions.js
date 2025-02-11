@@ -56,7 +56,7 @@ export default function AutoTriggeredPromotions() {
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Auto-Triggered Discount</h2>
       <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-100">
-      Discounts that are applied automatically depending on the 'active' and 'stackable' state.<span class="text-grey-900 font-semibold"></span>
+      Discounts that are applied automatically depending on the 'active' and 'stackable' state.<span className="text-grey-900 font-semibold"></span>
       </p>
       <div className="p-6">
         {isLoading ? (
@@ -67,7 +67,8 @@ export default function AutoTriggeredPromotions() {
           promotions.map((promo) => (
             <div key={promo.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
               {/* <h3 className="font-medium text-violet-800 mb-2">{promo.name.en}</h3> */}
-              <h1 class="flex items-center text-lg font-extrabold text-gray-700">{promo.name.en}</h1>
+              <h1 className="flex items-center text-lg font-extrabold text-gray-700">{promo.name.en}</h1>
+              <p className="text-xs text-gray-500 mt-1 mb-2 font-mono">{promo.cartPredicate}</p>
               <div className="flex flex-wrap gap-2">
                 {promo.isActive ? (
                   <span className="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full flex items-center">

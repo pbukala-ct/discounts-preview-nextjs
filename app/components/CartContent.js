@@ -5,7 +5,6 @@ import { useState } from 'react';
 export default function CartContent({ cartData, isLoading, onRemoveDiscount }) {
   const [openBreakdowns, setOpenBreakdowns] = useState({});
 
-
   
   const toggleBreakdown = (itemId) => {
     setOpenBreakdowns(prev => ({...prev, [itemId]: !prev[itemId]}));
@@ -82,8 +81,8 @@ cartData.lineItems.forEach(item => {
               />
             </div>
             <div className="flex-grow">
-        <h3 className="font-medium">{item.name.en}</h3>
-        <p className="text-sm text-gray-600">Price: {formatCurrency(item.price.value.centAmount, item.price.value.currencyCode)}</p>
+            <h3 className="font-medium">{item.name['en-US'] || item.name['en-GB'] || item.name['en-AU']}</h3>
+            <p className="text-sm text-gray-600">Price: {formatCurrency(item.price.value.centAmount, item.price.value.currencyCode)}</p>
         <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
         {item.discountedPrice && (
               <>

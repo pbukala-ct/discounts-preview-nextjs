@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 export default function AvailablePromotions({ cartData, onApplyDiscount, appliedDiscountCodes, applyBestPromoAutomatically }) {
   const [promotions, setPromotions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInfoExpanded, setIsInfoExpanded] = useState(false);
 
   useEffect(() => {
     if (cartData) {
@@ -25,7 +26,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
 
 
   const loadPromotions = async () => {
-    console.log('Loading promotions...');
+    console.log('Loading Discount Codes...');
     setIsLoading(true);
     try {
       const response = await apiRoot.discountCodes()
@@ -35,7 +36,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
         }
       })
       .execute();
-      //console.log('Discount codes loaded:', response);
+      console.log('Discount codes loaded:', response);
       
       // Filter discount codes with 'en' locale
       const enDiscountCodes = response.body.results.filter(code => code.name && code.name.en);
@@ -84,8 +85,8 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
   const calculatePromotionValues = async (discountCodes, cartData) => {
     //console.log('Calculating promotion values...');
     const promotionsWithValues = await Promise.all(discountCodes.map(async (code) => {
-      //console.log('Processing discount code:', code.code);
-      const shadowCart = await createShadowCart(cartData, code.code);
+    console.log('Processing discount code:', code.code);
+    const shadowCart = await createShadowCart(cartData, code.code);
       
       let discountValue = 0;
       let cartLevelDiscount = 0;
@@ -93,7 +94,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
       let includedDiscounts = [];
       let includedItemLevelDiscounts = [];
   
-     // console.log("shadowCart: " + JSON.stringify(shadowCart));
+      console.log("shadowCart: " + JSON.stringify(shadowCart));
       // Check for cart-level discount
       if (shadowCart.discountOnTotalPrice?.discountedAmount?.centAmount) {
         cartLevelDiscount = shadowCart.discountOnTotalPrice.discountedAmount.centAmount / 100;
@@ -107,8 +108,11 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
         if (item.discountedPrice && item.discountedPrice.includedDiscounts) {
           return total + item.discountedPrice.includedDiscounts.reduce((itemTotal, discount) => {
             includedItemLevelDiscounts.push({
-              skuName: item.name.en,
-              name: discount.discount.obj.name.en,
+              skuName: item.name.en || item.name['en-US'] ,
+              name: discount.discount.obj.name.en || 
+              discount.discount.obj.name['en-US'] || 
+              discount.discount.obj.name['en-AU'] || 
+              'Unnamed Discount',
               amount: discount.discountedAmount.centAmount / 100
             });
             return itemTotal + discount.discountedAmount.centAmount / 100;
@@ -165,7 +169,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
   
       // Combine existing discount codes with the new one, ensuring no duplicates
       const allDiscountCodes = [...new Set([...existingDiscountCodes, newDiscountCode])];
-  
+      console.log('All discount codes:', allDiscountCodes);
       const newCart = await apiRoot
         .carts()
         .post({
@@ -174,20 +178,30 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
           },
           body: {
             currency: cartData.totalPrice.currencyCode,
-            lineItems: cartData.lineItems.map(item => ({
-              productId: item.productId,
-              quantity: item.quantity,
-              distributionChannel: {
-                id: item.distributionChannel.id,
-                typeId: "channel"
-              },
-              supplyChannel: {
-                id: item.supplyChannel.id,
-                typeId: "channel"
+            lineItems: cartData.lineItems.map(item => {
+              const lineItem = {
+                productId: item.productId,
+                quantity: item.quantity,
+              };
+            
+              if (item.distributionChannel?.id) {
+                lineItem.distributionChannel = {
+                  id: item.distributionChannel.id,
+                  typeId: "channel"
+                };
               }
-            })),
+            
+              if (item.supplyChannel?.id) {
+                lineItem.supplyChannel = {
+                  id: item.supplyChannel.id,
+                  typeId: "channel"
+                };
+              }
+            
+              return lineItem;
+            }),
             discountCodes: allDiscountCodes, // Use the combined list of discount codes
-            country: "AU"
+            country: process.env.NEXT_PUBLIC_COUNTRY_CODE
           }
         })
         .execute();
@@ -206,11 +220,33 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Available Discounts</h2>
-      <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-200 leading-relaxed" >
-        Discounts that are applied automatically based on the configuration ('automatic') or manually using 'apply discount' button.
-      </p>
-      <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-100 leading-relaxed" >
-          Your new  <span class="text-grey-900 font-semibold">cart total</span> and the potential <span class="text-grey-900 font-semibold">discounts</span> including all active auto-triggered promotions if you apply this promotion. Breakdown shows how discount is applied, on total cart price or on line item level      </p>
+      <div className="border-b border-gray-200">
+        <button 
+          onClick={() => setIsInfoExpanded(!isInfoExpanded)}
+          className="w-full flex justify-between items-center px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700"
+        >
+          <span>Information about discounts</span>
+          <svg 
+            className={`w-5 h-5 transition-transform ${isInfoExpanded ? 'transform rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        
+        {isInfoExpanded && (
+          <div className="transition-all duration-300">
+            <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-200 leading-relaxed">
+              Discounts that are applied automatically based on the configuration 'Apply automatically' (custom field on Discount Code) or manually using 'apply discount' button. Depending on the implementation, the "best deal" discounts might be automatically applied on the customer cart.
+            </p>
+            <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-100 leading-relaxed">
+              Your new <span className="text-grey-900 font-semibold">cart total</span> and the potential <span className="text-grey-900 font-semibold">discounts</span> including all active auto-triggered promotions if you apply this promotion. Breakdown shows how discount is applied, on total cart price or on line item level
+            </p>
+          </div>
+        )}
+      </div>
       <div className="p-6">
         {isLoading ? (
           <p className="text-center text-gray-600">Loading discounts...</p>
@@ -220,13 +256,18 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
           promotions.map((promo, index) => (
             <div key={promo.id} className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
 
+{/* <span className="bg-blue-100 text-white text-xs font-semibold me-2 px-1.5 py-0.2 rounded dark:bg-red-400 dark:text-white-800 ms-2">Best Deal</span> */}
+
               <div className="flex justify-between items-start mb-2">
+              <div className="flex flex-col">
                 <div className="flex items-center">
-                <h1 class="flex items-center text-xl font-extrabold text-gray-700">{promo.name.en}</h1>
+                  <h1 className="flex items-center text-xl font-extrabold text-gray-700">{promo.name.en}</h1>
                   {index === 0 && (
                     <span className="bg-blue-100 text-white text-xs font-semibold me-2 px-1.5 py-0.2 rounded dark:bg-red-400 dark:text-white-800 ms-2">Best Deal</span>
                   )}
                 </div>
+                <p className="text-sm text-gray-500 mt-1">{promo.description.en}</p>
+              </div>
                 <div className="flex flex-col items-end space-y-1">
                   {promo.custom?.fields?.isAutomatic !== undefined && (
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full flex items-center ${
