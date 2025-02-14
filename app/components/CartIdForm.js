@@ -52,14 +52,27 @@ export default function CartIdForm({ onSubmit }) {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
+            disabled={isLoading}
             className="relative w-full h-10 ps-10 pe-4 text-left text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-100 focus:ring-gray-300 focus:border-gray-400"
           >
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19a9 9 0 1 0 0-18 9 9 0 0 0 0 18zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 11 14H9a3.987 3.987 0 0 0-3.951 3.512A8.949 8.949 0 0 0 10 19zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-              </svg>
-            </span>
-            {selectedCustomer ? selectedCustomer.email : 'Select a customer...'}
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <svg className="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span className="ml-2">Loading customers...</span>
+              </div>
+            ) : (
+              <>
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                  <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19a9 9 0 1 0 0-18 9 9 0 0 0 0 18zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 11 14H9a3.987 3.987 0 0 0-3.951 3.512A8.949 8.949 0 0 0 10 19zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                  </svg>
+                </span>
+                {selectedCustomer ? selectedCustomer.email : 'Select a customer...'}
+              </>
+            )}
           </button>
   
           {isOpen && (

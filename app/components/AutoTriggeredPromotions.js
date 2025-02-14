@@ -1,73 +1,47 @@
 'use client';
 
-import { apiRoot } from '../commercetools-client'
 import { useState, useEffect } from 'react';
+import { cartDiscounts } from '../services/cartDiscounts';
+import { cartAnalysisService } from '../services/cartAnalysisService';
 
 export default function AutoTriggeredPromotions() {
-  const [promotions, setPromotions] = useState([]);
+  const [discounts, setDiscounts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    loadAutoPromotions();
+    loadAutoDiscounts();
   }, []);
 
-  const loadAutoPromotions = async () => {
-    console.log('Loading auto-triggered promotions...');
+  const loadAutoDiscounts = async () => {
     setIsLoading(true);
-    setError(null);
-    try {
-      if (!apiRoot || typeof apiRoot.cartDiscounts !== 'function') {
-        throw new Error('API client is not properly initialized');
-      }
-
-      const response = await apiRoot
-        .cartDiscounts()
-        .get({
-          queryArgs: {
-            where: 'requiresDiscountCode=false',
-          }
-        })
-        .execute();
-
-      console.log('Auto-triggered promotions loaded:', response);
-
-      if (!response || !response.body || !Array.isArray(response.body.results)) {
-        throw new Error('Unexpected API response format');
-      }
-
-      const enPromotions = response.body.results.filter(promo => promo.name && promo.name.en);
-      setPromotions(enPromotions);
-    } catch (error) {
-      console.error('Error loading auto-triggered promotions:', error);
-      setError(error.message || 'An error occurred while loading promotions');
-      setPromotions([]);
-    } finally {
-      setIsLoading(false);
-    }
+    const { promotions, error } = await cartAnalysisService.getAutoDiscounts();
+    setDiscounts(promotions);
+    setError(error);
+    setIsLoading(false);
   };
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Auto-Triggered Discount</h2>
+      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">
+        All Cart Discounts Available
+      </h2>
       <p className="text-sm text-gray-600 px-4 py-2 border-b border-gray-200 bg-indigo-100">
-      Discounts that are applied automatically depending on the 'active' and 'stackable' state.<span className="text-grey-900 font-semibold"></span>
+        Discounts that are applied automatically depending on the 'active' and 'stackable' state.
       </p>
       <div className="p-6">
         {isLoading ? (
-          <p className="text-center text-gray-600">Loading promotions...</p>
-        ) : promotions.length === 0 ? (
-          <p className="text-center text-gray-600">No auto-triggered promotions available.</p>
+          <p className="text-center text-gray-600">Loading discounts...</p>
+        ) : discounts.length === 0 ? (
+          <p className="text-center text-gray-600">No auto-triggered discounts available.</p>
         ) : (
-          promotions.map((promo) => (
+          discounts.map((promo) => (
             <div key={promo.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
-              {/* <h3 className="font-medium text-violet-800 mb-2">{promo.name.en}</h3> */}
-              <h1 className="flex items-center text-lg font-extrabold text-gray-700">{promo.name.en}</h1>
+              <h1 className="flex items-center text-lg font-extrabold text-gray-700">{promo.name}</h1>
               <p className="text-xs text-gray-500 mt-1 mb-2 font-mono">{promo.cartPredicate}</p>
               <div className="flex flex-wrap gap-2">
                 {promo.isActive ? (

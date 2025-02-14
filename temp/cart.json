@@ -1,0 +1,1134 @@
+{
+    "type": "Cart",
+    "id": "e88e3f61-4bf6-45c8-a9a6-6a16cff9cf80",
+    "version": 127,
+    "versionModifiedAt": "2025-02-14T01:03:15.073Z",
+    "lastMessageSequenceNumber": 1,
+    "createdAt": "2024-12-19T01:35:32.672Z",
+    "lastModifiedAt": "2025-02-14T01:03:15.073Z",
+    "lastModifiedBy": {
+        "clientId": "YIKAyY9mdnLOQfd5A_xhy5QU",
+        "isPlatformClient": false
+    },
+    "createdBy": {
+        "clientId": "YIKAyY9mdnLOQfd5A_xhy5QU",
+        "isPlatformClient": false
+    },
+    "customerId": "cbaaab52-2988-49c2-934a-4fe230feabbc",
+    "customerEmail": "piotr.bukala@commercetools.com",
+    "anonymousId": "9a57b93c-2192-479e-09dc-b5123658f6bb",
+    "locale": "en-US",
+    "lineItems": [
+        {
+            "id": "05b362b5-c754-49f7-8f5d-1caaf635fd48",
+            "productId": "fd68d369-4111-4466-a70c-863a2970ee27",
+            "productKey": "charlie-armchair",
+            "name": {
+                "en-US": "Charlie Armchair ",
+                "en-GB": "Charlie Armchair",
+                "de-DE": "Sessel \"Charlie\"",
+                "en-AU": "Charlie Armchair"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "f74c5b0f-65d4-47f5-8a22-2ad154fca07a"
+            },
+            "productSlug": {
+                "en-US": "charlie-armchair",
+                "en-GB": "charlie-armchair",
+                "de-DE": "charlie-sessel"
+            },
+            "variant": {
+                "id": 1,
+                "sku": "CARM-023",
+                "prices": [
+                    {
+                        "id": "42f8d046-fe1d-41f3-898e-882161cafd9d",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "EUR",
+                            "centAmount": 49900,
+                            "fractionDigits": 2
+                        },
+                        "country": "DE"
+                    },
+                    {
+                        "id": "ba801bc9-8086-4b52-9e66-263c12cce851",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "GBP",
+                            "centAmount": 49900,
+                            "fractionDigits": 2
+                        },
+                        "country": "GB"
+                    },
+                    {
+                        "id": "7331afb7-24de-403c-8ee4-f95036c21144",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 49900,
+                            "fractionDigits": 2
+                        },
+                        "country": "US"
+                    },
+                    {
+                        "id": "7298b773-08df-42f5-be17-ed14173dbb5a",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "AUD",
+                            "centAmount": 49900,
+                            "fractionDigits": 2
+                        },
+                        "country": "AU"
+                    },
+                    {
+                        "id": "4fba347e-367d-4931-accf-eb8264aba036",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "NZD",
+                            "centAmount": 49900,
+                            "fractionDigits": 2
+                        },
+                        "country": "NZ"
+                    },
+                    {
+                        "id": "bd52b4fe-8452-4cce-bf62-148b43f2afe2",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "SGD",
+                            "centAmount": 49900,
+                            "fractionDigits": 2
+                        },
+                        "country": "SG"
+                    },
+                    {
+                        "id": "3854d2c1-f649-4fdf-ab99-b53373474eaa",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "PLN",
+                            "centAmount": 120000,
+                            "fractionDigits": 2
+                        }
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://storage.googleapis.com/merchant-center-europe/sample-data/goodstore/Charlie_Armchair-1.1.jpeg",
+                        "dimensions": {
+                            "w": 5500,
+                            "h": 4400
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "productspec",
+                        "value": {
+                            "en-GB": "- Dry clean only",
+                            "de-DE": "- Nur chemische Reinigung",
+                            "en-US": "- Dry clean only"
+                        }
+                    },
+                    {
+                        "name": "colorlabel",
+                        "value": {
+                            "en-GB": "Terracotta",
+                            "de-DE": "Terrakotta",
+                            "en-US": "Terracotta"
+                        }
+                    },
+                    {
+                        "name": "color",
+                        "value": {
+                            "en-GB": "#D57912",
+                            "de-DE": "#D57912",
+                            "en-US": "#D57912"
+                        }
+                    },
+                    {
+                        "name": "finishlabel",
+                        "value": {
+                            "en-GB": "Cedar",
+                            "de-DE": "Zeder",
+                            "en-US": "Cedar"
+                        }
+                    },
+                    {
+                        "name": "finish",
+                        "value": {
+                            "en-GB": "#ECD0B2",
+                            "de-DE": "#ECD0B2",
+                            "en-US": "#ECD0B2"
+                        }
+                    },
+                    {
+                        "name": "color-filter",
+                        "value": {
+                            "key": "#FFA500",
+                            "label": {
+                                "de-DE": "Orange",
+                                "en-GB": "Orange",
+                                "en-US": "Orange"
+                            }
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "value": {
+                            "en-US": "large"
+                        }
+                    }
+                ],
+                "assets": [],
+                "availability": {
+                    "isOnStock": true,
+                    "availableQuantity": 44,
+                    "version": 15,
+                    "id": "028cad3c-198d-46aa-9720-b757236810db"
+                }
+            },
+            "price": {
+                "id": "7331afb7-24de-403c-8ee4-f95036c21144",
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 49900,
+                    "fractionDigits": 2
+                },
+                "country": "US"
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [
+                {
+                    "quantity": 1,
+                    "discountedPrice": {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 39920,
+                            "fractionDigits": 2
+                        },
+                        "includedDiscounts": [
+                            {
+                                "discount": {
+                                    "typeId": "cart-discount",
+                                    "id": "341e16f1-5caa-4982-a62d-9a9ddd49472c",
+                                    "obj": {
+                                        "id": "341e16f1-5caa-4982-a62d-9a9ddd49472c",
+                                        "version": 3,
+                                        "versionModifiedAt": "2025-02-11T10:46:38.290Z",
+                                        "lastMessageSequenceNumber": 1,
+                                        "createdAt": "2025-02-11T10:43:30.511Z",
+                                        "lastModifiedAt": "2025-02-11T10:46:38.290Z",
+                                        "lastModifiedBy": {
+                                            "isPlatformClient": true,
+                                            "user": {
+                                                "typeId": "user",
+                                                "id": "e831fdda-deb3-43b7-a347-3853f3b10dc0"
+                                            }
+                                        },
+                                        "createdBy": {
+                                            "isPlatformClient": true,
+                                            "user": {
+                                                "typeId": "user",
+                                                "id": "e831fdda-deb3-43b7-a347-3853f3b10dc0"
+                                            }
+                                        },
+                                        "value": {
+                                            "type": "relative",
+                                            "permyriad": 2000
+                                        },
+                                        "cartPredicate": "totalPrice > \"500 USD\"",
+                                        "target": {
+                                            "type": "pattern",
+                                            "triggerPattern": [],
+                                            "targetPattern": [
+                                                {
+                                                    "type": "CountOnLineItemUnits",
+                                                    "predicate": "categories.key contains \"armchairs\"",
+                                                    "minCount": 3,
+                                                    "maxCount": 3,
+                                                    "excludeCount": 0
+                                                }
+                                            ],
+                                            "selectionMode": "Cheapest"
+                                        },
+                                        "name": {
+                                            "en-GB": "",
+                                            "en": "Set of any 3 chairs - 20% off",
+                                            "de": "",
+                                            "en-US": "Set of any 3 chairs",
+                                            "en-AU": ""
+                                        },
+                                        "description": {
+                                            "en-GB": "",
+                                            "en": "",
+                                            "de": "",
+                                            "en-US": "Set of any 3 chairs",
+                                            "en-AU": ""
+                                        },
+                                        "stackingMode": "Stacking",
+                                        "isActive": true,
+                                        "requiresDiscountCode": false,
+                                        "sortOrder": "0.81",
+                                        "references": [],
+                                        "stores": [],
+                                        "key": "chair3"
+                                    }
+                                },
+                                "discountedAmount": {
+                                    "type": "centPrecision",
+                                    "currencyCode": "USD",
+                                    "centAmount": 9980,
+                                    "fractionDigits": 2
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "taxRate": {
+                "name": "GST-NSW",
+                "amount": 0.1,
+                "includedInPrice": true,
+                "country": "AU",
+                "state": "NSW",
+                "id": "LzRqLD4I",
+                "key": "gst-nsw",
+                "subRates": []
+            },
+            "perMethodTaxRate": [],
+            "addedAt": "2025-02-11T10:36:15.897Z",
+            "lastModifiedAt": "2025-02-11T23:51:24.743Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "214c5cab-a16f-49e2-95e8-e861fa5f15cd"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "lineItemMode": "Standard",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "USD",
+                "centAmount": 39920,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 36291,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 39920,
+                    "fractionDigits": 2
+                },
+                "taxPortions": [
+                    {
+                        "rate": 0.1,
+                        "amount": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 3629,
+                            "fractionDigits": 2
+                        },
+                        "name": "GST-NSW"
+                    }
+                ],
+                "totalTax": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 3629,
+                    "fractionDigits": 2
+                }
+            },
+            "taxedPricePortions": []
+        },
+        {
+            "id": "1657f0ce-af4a-4b10-ac96-c3116f7d6612",
+            "productId": "ce0ee60c-e58c-4f1f-9234-53365e02579a",
+            "productKey": "glam-armchair",
+            "name": {
+                "en-US": "Glam Armchair",
+                "en-GB": "Glam Armchair",
+                "de-DE": "Glam Sessel"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "f74c5b0f-65d4-47f5-8a22-2ad154fca07a"
+            },
+            "productSlug": {
+                "en-US": "glam-armchair",
+                "en-GB": "glam-armchair",
+                "de-DE": "glam-sessel"
+            },
+            "variant": {
+                "id": 1,
+                "sku": "GARM-093",
+                "prices": [
+                    {
+                        "id": "99f81b06-cd43-4ca6-acea-62c134f1f8b8",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "EUR",
+                            "centAmount": 59900,
+                            "fractionDigits": 2
+                        },
+                        "country": "DE"
+                    },
+                    {
+                        "id": "43b839a8-8dc3-4826-89a0-82d1f93bf5b9",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "GBP",
+                            "centAmount": 59900,
+                            "fractionDigits": 2
+                        },
+                        "country": "GB"
+                    },
+                    {
+                        "id": "21d432e2-7bf8-472f-8350-ca420d6e6a93",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 59900,
+                            "fractionDigits": 2
+                        },
+                        "country": "US"
+                    },
+                    {
+                        "id": "ed89e817-5a91-4777-ad4b-39e1a18df795",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "AUD",
+                            "centAmount": 59900,
+                            "fractionDigits": 2
+                        },
+                        "country": "AU"
+                    },
+                    {
+                        "id": "83896ea8-ccf0-46ee-9954-18f968bad81f",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "NZD",
+                            "centAmount": 59900,
+                            "fractionDigits": 2
+                        },
+                        "country": "NZ"
+                    },
+                    {
+                        "id": "756fa80b-fd25-4852-9ae2-0c33b035159f",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "SGD",
+                            "centAmount": 59900,
+                            "fractionDigits": 2
+                        },
+                        "country": "SG"
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://storage.googleapis.com/merchant-center-europe/sample-data/goodstore/Glam_Armchair-1.1.jpeg",
+                        "dimensions": {
+                            "w": 5500,
+                            "h": 4400
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "productspec",
+                        "value": {
+                            "en-GB": "- Dry clean only\n- Pillow included",
+                            "de-DE": "- Nur chemische Reinigung\n- Kissen inklusive",
+                            "en-US": "- Dry clean only\n- Pillow included"
+                        }
+                    },
+                    {
+                        "name": "color",
+                        "value": {
+                            "en-GB": "#FECB69",
+                            "de-DE": "#FECB69",
+                            "en-US": "#FECB69"
+                        }
+                    },
+                    {
+                        "name": "colorlabel",
+                        "value": {
+                            "en-GB": "Gold",
+                            "de-DE": "Gold",
+                            "en-US": "Gold"
+                        }
+                    },
+                    {
+                        "name": "color-filter",
+                        "value": {
+                            "key": "#FFD700",
+                            "label": {
+                                "de-DE": "Gold",
+                                "en-GB": "Gold",
+                                "en-US": "Gold"
+                            }
+                        }
+                    },
+                    {
+                        "name": "finish",
+                        "value": {
+                            "en-GB": "#FFDF7F",
+                            "de-DE": "#FFDF7F",
+                            "en-US": "#FFDF7F"
+                        }
+                    },
+                    {
+                        "name": "finishlabel",
+                        "value": {
+                            "en-GB": "Brass",
+                            "de-DE": "Messing",
+                            "en-US": "Brass"
+                        }
+                    }
+                ],
+                "assets": [],
+                "availability": {
+                    "isOnStock": true,
+                    "availableQuantity": 100,
+                    "version": 1,
+                    "id": "c669434e-0d67-4456-955b-1d72cab0c6bb"
+                }
+            },
+            "price": {
+                "id": "21d432e2-7bf8-472f-8350-ca420d6e6a93",
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 59900,
+                    "fractionDigits": 2
+                },
+                "country": "US"
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [
+                {
+                    "quantity": 1,
+                    "discountedPrice": {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 47920,
+                            "fractionDigits": 2
+                        },
+                        "includedDiscounts": [
+                            {
+                                "discount": {
+                                    "typeId": "cart-discount",
+                                    "id": "341e16f1-5caa-4982-a62d-9a9ddd49472c",
+                                    "obj": {
+                                        "id": "341e16f1-5caa-4982-a62d-9a9ddd49472c",
+                                        "version": 3,
+                                        "versionModifiedAt": "2025-02-11T10:46:38.290Z",
+                                        "lastMessageSequenceNumber": 1,
+                                        "createdAt": "2025-02-11T10:43:30.511Z",
+                                        "lastModifiedAt": "2025-02-11T10:46:38.290Z",
+                                        "lastModifiedBy": {
+                                            "isPlatformClient": true,
+                                            "user": {
+                                                "typeId": "user",
+                                                "id": "e831fdda-deb3-43b7-a347-3853f3b10dc0"
+                                            }
+                                        },
+                                        "createdBy": {
+                                            "isPlatformClient": true,
+                                            "user": {
+                                                "typeId": "user",
+                                                "id": "e831fdda-deb3-43b7-a347-3853f3b10dc0"
+                                            }
+                                        },
+                                        "value": {
+                                            "type": "relative",
+                                            "permyriad": 2000
+                                        },
+                                        "cartPredicate": "totalPrice > \"500 USD\"",
+                                        "target": {
+                                            "type": "pattern",
+                                            "triggerPattern": [],
+                                            "targetPattern": [
+                                                {
+                                                    "type": "CountOnLineItemUnits",
+                                                    "predicate": "categories.key contains \"armchairs\"",
+                                                    "minCount": 3,
+                                                    "maxCount": 3,
+                                                    "excludeCount": 0
+                                                }
+                                            ],
+                                            "selectionMode": "Cheapest"
+                                        },
+                                        "name": {
+                                            "en-GB": "",
+                                            "en": "Set of any 3 chairs - 20% off",
+                                            "de": "",
+                                            "en-US": "Set of any 3 chairs",
+                                            "en-AU": ""
+                                        },
+                                        "description": {
+                                            "en-GB": "",
+                                            "en": "",
+                                            "de": "",
+                                            "en-US": "Set of any 3 chairs",
+                                            "en-AU": ""
+                                        },
+                                        "stackingMode": "Stacking",
+                                        "isActive": true,
+                                        "requiresDiscountCode": false,
+                                        "sortOrder": "0.81",
+                                        "references": [],
+                                        "stores": [],
+                                        "key": "chair3"
+                                    }
+                                },
+                                "discountedAmount": {
+                                    "type": "centPrecision",
+                                    "currencyCode": "USD",
+                                    "centAmount": 11980,
+                                    "fractionDigits": 2
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "taxRate": {
+                "name": "GST-NSW",
+                "amount": 0.1,
+                "includedInPrice": true,
+                "country": "AU",
+                "state": "NSW",
+                "id": "LzRqLD4I",
+                "key": "gst-nsw",
+                "subRates": []
+            },
+            "perMethodTaxRate": [],
+            "addedAt": "2025-02-11T10:44:05.831Z",
+            "lastModifiedAt": "2025-02-11T10:44:05.831Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "214c5cab-a16f-49e2-95e8-e861fa5f15cd"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "lineItemMode": "Standard",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "USD",
+                "centAmount": 47920,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 43564,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 47920,
+                    "fractionDigits": 2
+                },
+                "taxPortions": [
+                    {
+                        "rate": 0.1,
+                        "amount": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 4356,
+                            "fractionDigits": 2
+                        },
+                        "name": "GST-NSW"
+                    }
+                ],
+                "totalTax": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 4356,
+                    "fractionDigits": 2
+                }
+            },
+            "taxedPricePortions": []
+        },
+        {
+            "id": "a229d779-d9db-446d-a46d-6bba54c0749c",
+            "productId": "ee4dce3b-4dd0-49de-a4a9-a683562573cf",
+            "productKey": "leah-armchair",
+            "name": {
+                "en-US": "Leah Armchair",
+                "en-GB": "Leah Armchair",
+                "de-DE": "Leah Sessel"
+            },
+            "productType": {
+                "typeId": "product-type",
+                "id": "f74c5b0f-65d4-47f5-8a22-2ad154fca07a"
+            },
+            "productSlug": {
+                "en-US": "leah-armchair",
+                "en-GB": "leah-armchair",
+                "de-DE": "leah-sessel"
+            },
+            "variant": {
+                "id": 1,
+                "sku": "LAMR-03",
+                "prices": [
+                    {
+                        "id": "35743076-d3e9-48e5-8259-c3a761824094",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "EUR",
+                            "centAmount": 39900,
+                            "fractionDigits": 2
+                        },
+                        "country": "DE"
+                    },
+                    {
+                        "id": "40d3f2fa-ebb7-462a-928f-6a982cac2376",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "GBP",
+                            "centAmount": 39900,
+                            "fractionDigits": 2
+                        },
+                        "country": "GB"
+                    },
+                    {
+                        "id": "dd1c737a-d560-4677-af50-b707a81e6ecb",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 39900,
+                            "fractionDigits": 2
+                        },
+                        "country": "US"
+                    },
+                    {
+                        "id": "4e074984-7f65-4f77-b640-e92b7a1cc91b",
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "AUD",
+                            "centAmount": 39900,
+                            "fractionDigits": 2
+                        },
+                        "country": "AU"
+                    }
+                ],
+                "images": [
+                    {
+                        "url": "https://storage.googleapis.com/merchant-center-europe/sample-data/goodstore/Leah_Armchair-1.1.jpeg",
+                        "dimensions": {
+                            "w": 2400,
+                            "h": 3200
+                        }
+                    }
+                ],
+                "attributes": [
+                    {
+                        "name": "productspec",
+                        "value": {
+                            "en-GB": "- Dry clean only",
+                            "de-DE": "- Nur chemische Reinigung",
+                            "en-US": "- Dry clean only"
+                        }
+                    },
+                    {
+                        "name": "color-filter",
+                        "value": {
+                            "key": "#808080",
+                            "label": {
+                                "de-DE": "Grau",
+                                "en-GB": "Gray",
+                                "en-US": "Gray"
+                            }
+                        }
+                    },
+                    {
+                        "name": "color",
+                        "value": {
+                            "en-GB": "#AAAAAA",
+                            "de-DE": "#AAAAAA",
+                            "en-US": "#AAAAAA"
+                        }
+                    },
+                    {
+                        "name": "colorlabel",
+                        "value": {
+                            "en-GB": "Gray",
+                            "de-DE": "Grau",
+                            "en-US": "Gray"
+                        }
+                    },
+                    {
+                        "name": "finishlabel",
+                        "value": {
+                            "en-GB": "Brass",
+                            "de-DE": "Messing",
+                            "en-US": "Brass"
+                        }
+                    },
+                    {
+                        "name": "finish",
+                        "value": {
+                            "en-GB": "#E9C55A",
+                            "de-DE": "#E9C55A",
+                            "en-US": "#E9C55A"
+                        }
+                    }
+                ],
+                "assets": [],
+                "availability": {
+                    "isOnStock": true,
+                    "availableQuantity": 95,
+                    "version": 3,
+                    "id": "667104af-19ca-497b-882e-505aa0287664"
+                }
+            },
+            "price": {
+                "id": "dd1c737a-d560-4677-af50-b707a81e6ecb",
+                "value": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 39900,
+                    "fractionDigits": 2
+                },
+                "country": "US"
+            },
+            "quantity": 1,
+            "discountedPricePerQuantity": [
+                {
+                    "quantity": 1,
+                    "discountedPrice": {
+                        "value": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 31920,
+                            "fractionDigits": 2
+                        },
+                        "includedDiscounts": [
+                            {
+                                "discount": {
+                                    "typeId": "cart-discount",
+                                    "id": "341e16f1-5caa-4982-a62d-9a9ddd49472c",
+                                    "obj": {
+                                        "id": "341e16f1-5caa-4982-a62d-9a9ddd49472c",
+                                        "version": 3,
+                                        "versionModifiedAt": "2025-02-11T10:46:38.290Z",
+                                        "lastMessageSequenceNumber": 1,
+                                        "createdAt": "2025-02-11T10:43:30.511Z",
+                                        "lastModifiedAt": "2025-02-11T10:46:38.290Z",
+                                        "lastModifiedBy": {
+                                            "isPlatformClient": true,
+                                            "user": {
+                                                "typeId": "user",
+                                                "id": "e831fdda-deb3-43b7-a347-3853f3b10dc0"
+                                            }
+                                        },
+                                        "createdBy": {
+                                            "isPlatformClient": true,
+                                            "user": {
+                                                "typeId": "user",
+                                                "id": "e831fdda-deb3-43b7-a347-3853f3b10dc0"
+                                            }
+                                        },
+                                        "value": {
+                                            "type": "relative",
+                                            "permyriad": 2000
+                                        },
+                                        "cartPredicate": "totalPrice > \"500 USD\"",
+                                        "target": {
+                                            "type": "pattern",
+                                            "triggerPattern": [],
+                                            "targetPattern": [
+                                                {
+                                                    "type": "CountOnLineItemUnits",
+                                                    "predicate": "categories.key contains \"armchairs\"",
+                                                    "minCount": 3,
+                                                    "maxCount": 3,
+                                                    "excludeCount": 0
+                                                }
+                                            ],
+                                            "selectionMode": "Cheapest"
+                                        },
+                                        "name": {
+                                            "en-GB": "",
+                                            "en": "Set of any 3 chairs - 20% off",
+                                            "de": "",
+                                            "en-US": "Set of any 3 chairs",
+                                            "en-AU": ""
+                                        },
+                                        "description": {
+                                            "en-GB": "",
+                                            "en": "",
+                                            "de": "",
+                                            "en-US": "Set of any 3 chairs",
+                                            "en-AU": ""
+                                        },
+                                        "stackingMode": "Stacking",
+                                        "isActive": true,
+                                        "requiresDiscountCode": false,
+                                        "sortOrder": "0.81",
+                                        "references": [],
+                                        "stores": [],
+                                        "key": "chair3"
+                                    }
+                                },
+                                "discountedAmount": {
+                                    "type": "centPrecision",
+                                    "currencyCode": "USD",
+                                    "centAmount": 7980,
+                                    "fractionDigits": 2
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "taxRate": {
+                "name": "GST-NSW",
+                "amount": 0.1,
+                "includedInPrice": true,
+                "country": "AU",
+                "state": "NSW",
+                "id": "LzRqLD4I",
+                "key": "gst-nsw",
+                "subRates": []
+            },
+            "perMethodTaxRate": [],
+            "addedAt": "2025-02-14T01:03:15.035Z",
+            "lastModifiedAt": "2025-02-14T01:03:15.035Z",
+            "state": [
+                {
+                    "quantity": 1,
+                    "state": {
+                        "typeId": "state",
+                        "id": "214c5cab-a16f-49e2-95e8-e861fa5f15cd"
+                    }
+                }
+            ],
+            "priceMode": "Platform",
+            "lineItemMode": "Standard",
+            "totalPrice": {
+                "type": "centPrecision",
+                "currencyCode": "USD",
+                "centAmount": 31920,
+                "fractionDigits": 2
+            },
+            "taxedPrice": {
+                "totalNet": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 29018,
+                    "fractionDigits": 2
+                },
+                "totalGross": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 31920,
+                    "fractionDigits": 2
+                },
+                "taxPortions": [
+                    {
+                        "rate": 0.1,
+                        "amount": {
+                            "type": "centPrecision",
+                            "currencyCode": "USD",
+                            "centAmount": 2902,
+                            "fractionDigits": 2
+                        },
+                        "name": "GST-NSW"
+                    }
+                ],
+                "totalTax": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 2902,
+                    "fractionDigits": 2
+                }
+            },
+            "taxedPricePortions": []
+        }
+    ],
+    "cartState": "Active",
+    "totalPrice": {
+        "type": "centPrecision",
+        "currencyCode": "USD",
+        "centAmount": 107784,
+        "fractionDigits": 2
+    },
+    "taxedPrice": {
+        "totalNet": {
+            "type": "centPrecision",
+            "currencyCode": "USD",
+            "centAmount": 97986,
+            "fractionDigits": 2
+        },
+        "totalGross": {
+            "type": "centPrecision",
+            "currencyCode": "USD",
+            "centAmount": 107784,
+            "fractionDigits": 2
+        },
+        "taxPortions": [
+            {
+                "rate": 0.1,
+                "amount": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 10887,
+                    "fractionDigits": 2
+                },
+                "name": "GST-NSW"
+            }
+        ],
+        "totalTax": {
+            "type": "centPrecision",
+            "currencyCode": "USD",
+            "centAmount": 9798,
+            "fractionDigits": 2
+        }
+    },
+    "country": "US",
+    "discountOnTotalPrice": {
+        "discountedAmount": {
+            "type": "centPrecision",
+            "currencyCode": "USD",
+            "centAmount": 11976,
+            "fractionDigits": 2
+        },
+        "includedDiscounts": [
+            {
+                "discount": {
+                    "typeId": "cart-discount",
+                    "id": "d2933e51-dc25-4f35-9403-ef13e2b7495e",
+                    "obj": {
+                        "id": "d2933e51-dc25-4f35-9403-ef13e2b7495e",
+                        "version": 2,
+                        "versionModifiedAt": "2025-02-11T12:04:42.460Z",
+                        "lastMessageSequenceNumber": 1,
+                        "createdAt": "2025-02-11T12:04:39.550Z",
+                        "lastModifiedAt": "2025-02-11T12:04:42.460Z",
+                        "lastModifiedBy": {
+                            "isPlatformClient": true,
+                            "user": {
+                                "typeId": "user",
+                                "id": "e831fdda-deb3-43b7-a347-3853f3b10dc0"
+                            }
+                        },
+                        "createdBy": {
+                            "isPlatformClient": true,
+                            "user": {
+                                "typeId": "user",
+                                "id": "e831fdda-deb3-43b7-a347-3853f3b10dc0"
+                            }
+                        },
+                        "value": {
+                            "type": "relative",
+                            "permyriad": 1000
+                        },
+                        "cartPredicate": "totalPrice > \"1000 USD\"",
+                        "target": {
+                            "type": "totalPrice"
+                        },
+                        "name": {
+                            "en-GB": "",
+                            "en": "10% off above 1k",
+                            "de": "",
+                            "en-US": "10% off above 1k",
+                            "en-AU": ""
+                        },
+                        "description": {
+                            "en-GB": "",
+                            "en": "",
+                            "de": "",
+                            "en-US": "",
+                            "en-AU": ""
+                        },
+                        "stackingMode": "Stacking",
+                        "isActive": true,
+                        "requiresDiscountCode": false,
+                        "sortOrder": "0.8",
+                        "references": [],
+                        "stores": [],
+                        "key": "10off"
+                    }
+                },
+                "discountedAmount": {
+                    "type": "centPrecision",
+                    "currencyCode": "USD",
+                    "centAmount": 11976,
+                    "fractionDigits": 2
+                }
+            }
+        ],
+        "discountedNetAmount": {
+            "type": "centPrecision",
+            "currencyCode": "USD",
+            "centAmount": 10887,
+            "fractionDigits": 2
+        },
+        "discountedGrossAmount": {
+            "type": "centPrecision",
+            "currencyCode": "USD",
+            "centAmount": 11976,
+            "fractionDigits": 2
+        }
+    },
+    "shippingMode": "Single",
+    "shippingAddress": {
+        "id": "MwlL2hU7",
+        "salutation": "MR",
+        "firstName": "Piotr",
+        "lastName": "Bukala",
+        "streetName": "Commerce",
+        "streetNumber": "123",
+        "postalCode": "2010",
+        "city": "Sydney",
+        "state": "NSW",
+        "country": "AU",
+        "phone": "61499070722",
+        "email": "piotr.bukala@commercetools.com"
+    },
+    "shipping": [],
+    "customLineItems": [],
+    "discountCodes": [],
+    "directDiscounts": [],
+    "inventoryMode": "ReserveOnOrder",
+    "taxMode": "Platform",
+    "taxRoundingMode": "HalfEven",
+    "taxCalculationMode": "LineItemLevel",
+    "deleteDaysAfterLastModification": 90,
+    "refusedGifts": [],
+    "origin": "Customer",
+    "billingAddress": {
+        "firstName": "Piotr",
+        "lastName": "Bukala",
+        "streetName": "Commerce",
+        "postalCode": "2010",
+        "city": "Sydney",
+        "state": "NSW",
+        "country": "AU",
+        "phone": "61499070722",
+        "email": "piotr.bukala@commercetools.com"
+    },
+    "itemShippingAddresses": [],
+    "totalLineItemQuantity": 3
+}

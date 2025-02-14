@@ -26,7 +26,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
 
 
   const loadPromotions = async () => {
-    console.log('Loading Discount Codes...');
+    //console.log('Loading Discount Codes...');
     setIsLoading(true);
     try {
       const response = await apiRoot.discountCodes()
@@ -36,13 +36,13 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
         }
       })
       .execute();
-      console.log('Discount codes loaded:', response);
+      //console.log('Discount codes loaded:', response);
       
       // Filter discount codes with 'en' locale
       const enDiscountCodes = response.body.results.filter(code => code.name && code.name.en);
       
       const promotionsWithValues = await calculatePromotionValues(enDiscountCodes, cartData);
-      console.log('Promotions with calculated values:', promotionsWithValues);
+      //console.log('Promotions with calculated values:', promotionsWithValues);
       const sortedPromotions = promotionsWithValues.sort((a, b) => b.discountValue - a.discountValue);
 
       
@@ -85,7 +85,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
   const calculatePromotionValues = async (discountCodes, cartData) => {
     //console.log('Calculating promotion values...');
     const promotionsWithValues = await Promise.all(discountCodes.map(async (code) => {
-    console.log('Processing discount code:', code.code);
+    //console.log('Processing discount code:', code.code);
     const shadowCart = await createShadowCart(cartData, code.code);
       
       let discountValue = 0;
@@ -94,7 +94,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
       let includedDiscounts = [];
       let includedItemLevelDiscounts = [];
   
-      console.log("shadowCart: " + JSON.stringify(shadowCart));
+      //console.log("shadowCart: " + JSON.stringify(shadowCart));
       // Check for cart-level discount
       if (shadowCart.discountOnTotalPrice?.discountedAmount?.centAmount) {
         cartLevelDiscount = shadowCart.discountOnTotalPrice.discountedAmount.centAmount / 100;
@@ -169,7 +169,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
   
       // Combine existing discount codes with the new one, ensuring no duplicates
       const allDiscountCodes = [...new Set([...existingDiscountCodes, newDiscountCode])];
-      console.log('All discount codes:', allDiscountCodes);
+     // console.log('All discount codes:', allDiscountCodes);
       const newCart = await apiRoot
         .carts()
         .post({
@@ -219,7 +219,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Available Discounts</h2>
+      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Available Applicable Discounts (discounts code based)</h2>
       <div className="border-b border-gray-200">
         <button 
           onClick={() => setIsInfoExpanded(!isInfoExpanded)}

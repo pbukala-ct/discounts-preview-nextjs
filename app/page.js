@@ -40,7 +40,7 @@ export default function Home() {
         .withCustomerId({customerId: customerId })
         .get({
           queryArgs: {
-            expand: ['discountCodes[*].discountCode', 'discountOnTotalPrice.includedDiscounts[*].discount','lineItems[*].discountedPrice.includedDiscounts[*].discount'],
+            expand: ['discountCodes[*].discountCode', 'discountOnTotalPrice.includedDiscounts[*].discount','lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount','lineItems[*].price.discounted.discount'],
           }
         })
         .execute();
@@ -103,7 +103,7 @@ export default function Home() {
         .withId({ ID: cartData.id })
         .post({   
           queryArgs: {
-            expand: ['discountCodes[*].discountCode', 'discountOnTotalPrice.includedDiscounts[*].discount','lineItems[*].discountedPrice.includedDiscounts[*].discount'],
+            expand: ['discountCodes[*].discountCode', 'discountOnTotalPrice.includedDiscounts[*].discount','lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount','lineItems[*].price.discounted.discount'],
           },
           body: {
             version: cartData.version,
@@ -138,7 +138,7 @@ export default function Home() {
         .withId({ ID: cartData.id })
         .post({
           queryArgs: {
-            expand: ['discountCodes[*].discountCode', 'discountOnTotalPrice.includedDiscounts[*].discount','lineItems[*].discountedPrice.includedDiscounts[*].discount'],
+            expand: ['discountCodes[*].discountCode', 'discountOnTotalPrice.includedDiscounts[*].discount','lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount','lineItems[*].price.discounted.discount'],
           },
           body: {
             version: cartData.version,
