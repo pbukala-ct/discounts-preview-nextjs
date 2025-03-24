@@ -75,7 +75,7 @@ if (cartData.discountOnTotalPrice?.discountedAmount?.centAmount) {
   totalDiscount += cartData.discountOnTotalPrice.discountedAmount.centAmount;
   cartData.discountOnTotalPrice.includedDiscounts.forEach(discount => {
     discounts.set(discount.discount.id, {
-      name: discount.discount.obj?.name?.en || 'Unnamed Discount',
+      name: discount.discount.obj?.name?.en || discount.discount.obj?.name["en-US"]  || 'Unnamed Discount',
       amount: discount.discountedAmount.centAmount
     });
   });

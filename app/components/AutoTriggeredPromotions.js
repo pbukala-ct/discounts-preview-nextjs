@@ -41,7 +41,9 @@ export default function AutoTriggeredPromotions() {
         ) : (
           discounts.map((promo) => (
             <div key={promo.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
-              <h1 className="flex items-center text-lg font-extrabold text-gray-700">{promo.name}</h1>
+              <h1 className="flex items-center text-lg font-extrabold text-gray-700">
+                {promo.name || "Unnamed Promotion"}
+                </h1>
               <p className="text-xs text-gray-500 mt-1 mb-2 font-mono">{promo.cartPredicate}</p>
               <div className="flex flex-wrap gap-2">
                 {promo.isActive ? (

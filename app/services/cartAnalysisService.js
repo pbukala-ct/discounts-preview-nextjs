@@ -78,6 +78,10 @@ class CartAnalysisService {
     // Clean the predicate string
     predicate = predicate.trim();
 
+    console.log('Analyzing predicate:', predicate);
+    console.log('Category Data:', categoryData);
+    console.log('Cart Data:', cartData);
+
     // Early return if this is a customer group condition
     if (predicate.includes('customer.customerGroup.key')) {
       return {
@@ -89,11 +93,11 @@ class CartAnalysisService {
     }
 
     // Parse total price condition
-    const totalPriceMatch = predicate.match(/totalPrice\s*>\s*"(\d+)\s+([A-Z]+)"/);
-    if (totalPriceMatch && !predicate.includes(' and ')) {
-      const requiredAmount = parseInt(totalPriceMatch[1]) * 100; // Convert to cents
-      const currency = totalPriceMatch[2];
-      const currentAmount = cartData.totalPrice.centAmount;
+const totalPriceMatch = predicate.match(/totalPrice\s*(>=|>)\s*"(\d+(?:\.\d+)?)\s+([A-Za-z]+)"/);
+if (totalPriceMatch && !predicate.includes(' and ')) {
+  const requiredAmount = parseInt(totalPriceMatch[2]) * 100; // Convert to cents
+  const currency = totalPriceMatch[3];
+  const currentAmount = cartData.totalPrice.centAmount;
 
       if (currentAmount >= requiredAmount) {
         return {

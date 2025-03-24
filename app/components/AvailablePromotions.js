@@ -39,7 +39,9 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
       //console.log('Discount codes loaded:', response);
       
       // Filter discount codes with 'en' locale
-      const enDiscountCodes = response.body.results.filter(code => code.name && code.name.en);
+      const enDiscountCodes = response.body.results.filter(code => 
+        code.name && (code.name.en || code.name["en-US"])
+      );
       
       const promotionsWithValues = await calculatePromotionValues(enDiscountCodes, cartData);
       //console.log('Promotions with calculated values:', promotionsWithValues);
@@ -99,7 +101,10 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
       if (shadowCart.discountOnTotalPrice?.discountedAmount?.centAmount) {
         cartLevelDiscount = shadowCart.discountOnTotalPrice.discountedAmount.centAmount / 100;
         includedDiscounts = shadowCart.discountOnTotalPrice.includedDiscounts.map(discount => ({
-          name: discount.discount.obj.name.en,
+          name: discount.discount.obj.name.en || 
+            discount.discount.obj.name['en-US'] || 
+            discount.discount.obj.name['en-AU'] || 
+            'Unnamed Discount',
           amount: discount.discountedAmount.centAmount / 100
         }));
       } 
@@ -219,7 +224,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Available Applicable Discounts (discounts code based)</h2>
+      <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Available Discounts (discount code based)</h2>
       <div className="border-b border-gray-200">
         <button 
           onClick={() => setIsInfoExpanded(!isInfoExpanded)}
@@ -261,12 +266,14 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
               <div className="flex justify-between items-start mb-2">
               <div className="flex flex-col">
                 <div className="flex items-center">
-                  <h1 className="flex items-center text-xl font-extrabold text-gray-700">{promo.name.en}</h1>
+                <h1 className="flex items-center text-xl font-extrabold text-gray-700">
+                  {promo.name.en || promo.name["en-US"] || "Unnamed Promotion"}
+                </h1>
                   {index === 0 && (
                     <span className="bg-blue-100 text-white text-xs font-semibold me-2 px-1.5 py-0.2 rounded dark:bg-red-400 dark:text-white-800 ms-2">Best Deal</span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500 mt-1">{promo.description.en}</p>
+                <p className="text-sm text-gray-500 mt-1">{promo.description.en || promo.description["en-US"]}</p>
               </div>
                 <div className="flex flex-col items-end space-y-1">
                   {promo.custom?.fields?.isAutomatic !== undefined && (
@@ -335,7 +342,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
                             {discount.name}: <span className="text-gray-500 font-semibold">{formatCurrency(discount.amount, 'AUD')}</span>
                           </p>
                         ))}
-                       <p className="text-sm font-semibold text-gray-600 mt-2 border-t pt-1 bg-gray-100 p-1 rounded">
+                       <p className="text-sm font-semibold text-gray-900 mt-2 border-t pt-1 bg-gray-100 p-1 rounded">
                         Cart Discounts Total: 
                         <span className="text-green-800 font-semibold ml-1 text-sm">
                           {formatCurrency(

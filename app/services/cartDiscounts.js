@@ -28,14 +28,18 @@ class CartDiscounts {
         throw new Error('Unexpected API response format');
       }
 
-      // Filter promotions to only include those with English names
-      const enPromotions = response.body.results.filter(promo => promo.name && promo.name.en);
+
+    // Filter promotions to include those with English names in either 'en' or 'en-US' format
+    const enPromotions = response.body.results.filter(promo => 
+      (promo.name && (promo.name.en || promo.name["en-US"]))
+    );
+      console.log('Filtered promotions:', enPromotions);
 
       return {
         promotions: enPromotions.map(promo => ({
           id: promo.id,
           version: promo.version,
-          name: promo.name.en,
+          name: promo.name.en || promo.name["en-US"] || "Unnamed Promotion",
           description: promo.description?.en || '',
           cartPredicate: promo.cartPredicate,
           isActive: promo.isActive,
