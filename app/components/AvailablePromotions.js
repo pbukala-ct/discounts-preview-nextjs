@@ -9,14 +9,21 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
   const [promotions, setPromotions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isInfoExpanded, setIsInfoExpanded] = useState(false);
+  const [currencyCode, setCurrencyCode] = useState('AUD'); // Default fallback
+
 
   useEffect(() => {
     if (cartData) {
+      if (cartData.totalPrice && cartData.totalPrice.currencyCode) {
+        setCurrencyCode(cartData.totalPrice.currencyCode);
+      }
       loadPromotions();
     } else {
       //setPromotions([]);
     }
   }, [cartData]);
+
+
 
   // const handleApplyDiscount = async (discountCode) => {
   //   await onApplyDiscount(discountCode);
@@ -44,7 +51,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
       );
       
       const promotionsWithValues = await calculatePromotionValues(enDiscountCodes, cartData);
-      //console.log('Promotions with calculated values:', promotionsWithValues);
+      console.log('Promotions with calculated values:', promotionsWithValues);
       const sortedPromotions = promotionsWithValues.sort((a, b) => b.discountValue - a.discountValue);
 
       
@@ -105,7 +112,8 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
             discount.discount.obj.name['en-US'] || 
             discount.discount.obj.name['en-AU'] || 
             'Unnamed Discount',
-          amount: discount.discountedAmount.centAmount / 100
+          amount: discount.discountedAmount.centAmount / 100,
+          currency: shadowCart.discountOnTotalPrice.discountedAmount.currencyCode
         }));
       } 
       // Calculate line item discounts 
@@ -118,7 +126,9 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
               discount.discount.obj.name['en-US'] || 
               discount.discount.obj.name['en-AU'] || 
               'Unnamed Discount',
-              amount: discount.discountedAmount.centAmount / 100
+              amount: discount.discountedAmount.centAmount / 100,
+              currency: discount.discountedAmount.currencyCode
+              // currency: shadowCart.discountOnTotalPrice.discountedAmount.currencyCode
             });
             return itemTotal + discount.discountedAmount.centAmount / 100;
           }, 0);
@@ -311,8 +321,8 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
               <div className="flex flex-col">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <p className="text-lg font-semibold text-gray-600">Cart Total: <span className="text-gray-600 font-bold">{formatCurrency(promo.totalCart, 'AUD')}</span></p>
-                    <p className="text-lg font-semibold text-gray-600">Discount Total: <span className="text-green-700 font-bold">{formatCurrency(promo.discountValue, 'AUD')}</span></p>
+                    <p className="text-lg font-semibold text-gray-600">Cart Total: <span className="text-gray-600 font-bold">{formatCurrency(promo.totalCart, currencyCode)}</span></p>
+                    <p className="text-lg font-semibold text-gray-600">Discount Total: <span className="text-green-700 font-bold">{formatCurrency(promo.discountValue, currencyCode)}</span></p>
                   </div>
                   <div>
                     {appliedDiscountCodes.includes(promo.code) ? (
@@ -339,7 +349,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
                         <p className="text-sm font-medium text-gray-500 mb-1">Cart Discounts:</p>
                         {promo.includedDiscounts.map((discount, idx) => (
                           <p key={idx} className="text-xs text-gray-400">
-                            {discount.name}: <span className="text-gray-500 font-semibold">{formatCurrency(discount.amount, 'AUD')}</span>
+                            {discount.name}: <span className="text-gray-500 font-semibold">{formatCurrency(discount.amount, currencyCode)}</span>
                           </p>
                         ))}
                        <p className="text-sm font-semibold text-gray-900 mt-2 border-t pt-1 bg-gray-100 p-1 rounded">
@@ -347,7 +357,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
                         <span className="text-green-800 font-semibold ml-1 text-sm">
                           {formatCurrency(
                             promo.includedDiscounts.reduce((sum, discount) => sum + discount.amount, 0),
-                            'AUD'
+                            currencyCode
                           )}
                         </span>
                       </p>
@@ -371,7 +381,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
                       <td className="px-2 py-1 text-gray-400">{discount.skuName}</td>
                       <td className="px-2 py-1 text-gray-400">{discount.name}</td>
                       <td className="px-2 py-1 text-right text-gray-500 font-semibold">
-                        {formatCurrency(discount.amount, 'AUD')}
+                        {formatCurrency(discount.amount, currencyCode)}
                       </td>
                     </tr>
                     </>
@@ -390,7 +400,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
                         Total for: <span className="text-green-800 font-semibold">{name}</span>
                       </td>
                       <td className="px-2 py-1 text-right text-gray-600">
-                        {formatCurrency(total, 'AUD')}
+                        {formatCurrency(total, currencyCode)}
                       </td>
                     </tr>
                     
@@ -405,7 +415,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
                     <td className="px-2 py-1 text-right text-green-800 text-sm">
                       {formatCurrency(
                         promo.includedItemLevelDiscounts.reduce((sum, discount) => sum + discount.amount, 0),
-                        'AUD'
+                        currencyCode
                       )}
                     </td>
                   </tr>

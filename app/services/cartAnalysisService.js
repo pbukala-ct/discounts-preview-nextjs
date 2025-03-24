@@ -78,9 +78,9 @@ class CartAnalysisService {
     // Clean the predicate string
     predicate = predicate.trim();
 
-    console.log('Analyzing predicate:', predicate);
-    console.log('Category Data:', categoryData);
-    console.log('Cart Data:', cartData);
+    // console.log('Analyzing predicate:', predicate);
+    // console.log('Category Data:', categoryData);
+    // console.log('Cart Data:', cartData);
 
     // Early return if this is a customer group condition
     if (predicate.includes('customer.customerGroup.key')) {
