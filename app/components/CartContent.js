@@ -269,6 +269,29 @@ cartData.lineItems.forEach(item => {
       -{formatCurrency(totalDiscount * 100, cartData.totalPrice.currencyCode)}
     </span>
   </div>
+
+  {/* Discount Type Combination Info */}
+  {cartData.discountTypeCombination && (
+    <div className="mt-2 mb-3 p-2 bg-indigo-50 rounded-md">
+      <p className="text-xs text-gray-600">
+        <span className="font-medium">Discount Strategy: </span>
+        {cartData.discountTypeCombination.type || 'Not specified'}
+        {cartData.discountTypeCombination.chosenDiscountType && (
+          <span> (Selected: <span className="font-semibold text-indigo-700">{cartData.discountTypeCombination.chosenDiscountType}</span>)</span>
+        )}
+      </p>
+      <p className="text-xs text-gray-500 italic mt-1">
+        {cartData.discountTypeCombination.type === 'BestDeal' 
+          ? 'The system automatically selected the most favorable discount for you.'
+          : cartData.discountTypeCombination.type === 'Exclusive' 
+            ? 'Only one discount type can be applied at a time.'
+            : cartData.discountTypeCombination.type === 'Cumulative' 
+              ? 'Multiple discount types can be combined for maximum savings.'
+              : ''}
+      </p>
+    </div>
+  )}
+  
   <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
     <span className="text-xl font-bold">Cart Total:</span>
     <span className="text-2xl font-bold">

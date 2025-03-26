@@ -43,11 +43,11 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
         }
       })
       .execute();
-      //console.log('Discount codes loaded:', response);
+      console.log('Discount codes loaded:', response);
       
       // Filter discount codes with 'en' locale
       const enDiscountCodes = response.body.results.filter(code => 
-        code.name && (code.name.en || code.name["en-US"])
+        code.name && (code.name.en || code.name["en-US"] || code.name["en-AU"])
       );
       
       const promotionsWithValues = await calculatePromotionValues(enDiscountCodes, cartData);
@@ -92,9 +92,9 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
 
 
   const calculatePromotionValues = async (discountCodes, cartData) => {
-    //console.log('Calculating promotion values...');
+    console.log('Calculating promotion values...');
     const promotionsWithValues = await Promise.all(discountCodes.map(async (code) => {
-    //console.log('Processing discount code:', code.code);
+    console.log('Processing discount code:', code.code);
     const shadowCart = await createShadowCart(cartData, code.code);
       
       let discountValue = 0;
@@ -121,7 +121,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
         if (item.discountedPrice && item.discountedPrice.includedDiscounts) {
           return total + item.discountedPrice.includedDiscounts.reduce((itemTotal, discount) => {
             includedItemLevelDiscounts.push({
-              skuName: item.name.en || item.name['en-US'] ,
+              skuName: item.name.en || item.name['en-US'] || item.name['en-AU'],
               name: discount.discount.obj.name.en || 
               discount.discount.obj.name['en-US'] || 
               discount.discount.obj.name['en-AU'] || 
@@ -216,7 +216,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
               return lineItem;
             }),
             discountCodes: allDiscountCodes, // Use the combined list of discount codes
-            country: process.env.NEXT_PUBLIC_COUNTRY_CODE
+            country: cartData.country
           }
         })
         .execute();
@@ -277,13 +277,13 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
               <div className="flex flex-col">
                 <div className="flex items-center">
                 <h1 className="flex items-center text-xl font-extrabold text-gray-700">
-                  {promo.name.en || promo.name["en-US"] || "Unnamed Promotion"}
+                  {promo.name.en || promo.name["en-US"] || promo.name["en-AU"] }
                 </h1>
                   {index === 0 && (
                     <span className="bg-blue-100 text-white text-xs font-semibold me-2 px-1.5 py-0.2 rounded dark:bg-red-400 dark:text-white-800 ms-2">Best Deal</span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500 mt-1">{promo.description.en || promo.description["en-US"]}</p>
+                <p className="text-sm text-gray-500 mt-1">{promo.description.en || promo.description["en-US"] || promo.description["en-AU"]}</p>
               </div>
                 <div className="flex flex-col items-end space-y-1">
                   {promo.custom?.fields?.isAutomatic !== undefined && (
