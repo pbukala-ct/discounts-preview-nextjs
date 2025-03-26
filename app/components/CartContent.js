@@ -13,6 +13,19 @@ export default function CartContent({ cartData, isLoading, onRemoveDiscount }) {
     totalProducts: 0
   });
 
+  const [expandedSections, setExpandedSections] = useState({
+    qualified: false,
+    pending: false,
+    notApplicable: false
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   useEffect(() => {
     async function analyzeCartData() {
       if (cartData) {
@@ -176,43 +189,304 @@ cartData.lineItems.forEach(item => {
       </div>
 
 
+{/* Potential Discounts Section */}
+<div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+  <h3 className="text-lg font-semibold px-4 py-2 bg-grey-50 text-indigo-700 border-b-2 border-indigo-300">
+    Potential Discounts based on your cart:
+  </h3>
+  
+  {cartAnalysis && cartAnalysis.discountAnalysis ? (
+    <div className="mt-4 space-y-3">
+      {cartAnalysis.discountAnalysis
+        .filter(analysis => analysis.qualificationStatus === 'PENDING')
+        .map((analysis, index) => (
+          <div key={index} className="flex flex-col p-3 bg-white rounded-lg border border-gray-100">
+            <div className="flex items-start space-x-3">
+              <div className="flex-1">
+                <h4 className="text-lg font-semibold text-gray-700">
+                  {analysis.discount.name}
+                </h4>
+                
+                {/* For combined conditions, show both qualified and pending */}
+                {analysis.type === 'COMBINED' ? (
+                  <div className="mt-2">
+                    {/* Show qualified conditions if any */}
+                    {analysis.qualifiedConditions && analysis.qualifiedConditions.length > 0 && (
+                      <div className="mb-2">
+                        <p className="text-sm font-medium text-green-700">Requirements Met:</p>
+                        <ul className="list-disc list-inside text-sm text-green-600 ml-2">
+                          {analysis.qualifiedConditions.map((condition, idx) => (
+                            <li key={idx}>{condition}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {/* Show pending conditions */}
+                    {analysis.pendingConditions && analysis.pendingConditions.length > 0 && (
+                      <div>
+                        <p className="text-sm font-medium text-orange-700">Requirements Needed:</p>
+                        <ul className="list-disc list-inside text-sm text-orange-600 ml-2">
+                          {analysis.pendingConditions.map((condition, idx) => (
+                            <li key={idx}>{condition}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  // For simple conditions, just show the qualification message
+                  <p className="text-sm text-gray-600 mt-1">
+                    {analysis.qualificationMessage}
+                  </p>
+                )}
+              </div>
+              <span className="px-2 py-1 text-xs font-semibold text-orange-700 bg-orange-100 rounded-full">
+                Pending
+              </span>
+            </div>
+          </div>
+        ))}
+        
+      {!cartAnalysis.discountAnalysis.some(analysis => analysis.qualificationStatus === 'PENDING') && (
+        <p className="text-grey-600 tracking-normal italic p-2">
+          No potential discounts available at the moment
+        </p>
+      )}
+    </div>
+  ) : (
+    <p className="text-grey-600 tracking-normal italic p-2">
+      Loading potential discounts...
+    </p>
+  )}
+</div>
 
-         {/* Potential Discounts Section */}
-         <div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-          <h3 className="text-lg font-semibold px-4 py-2 bg-grey-50 text-indigo-700 border-b-2 border-indigo-300">
-            Potential Discounts based on your cart:
-          </h3>
-          {cartAnalysis && cartAnalysis.discountAnalysis ? (
-            <div className="mt-4 space-y-3">
-              {cartAnalysis.discountAnalysis
-                .filter(analysis => analysis.qualificationStatus === 'PENDING')
-                .map((analysis, index) => (
-                  <div key={index} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-100">
+{/* All Discounts Sections */}
+<div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+  <h3 className="text-lg font-semibold px-4 py-2 bg-grey-50 text-indigo-700 border-b-2 border-indigo-300">
+    Discounts Analysis:
+  </h3>
+  
+  {cartAnalysis && cartAnalysis.discountAnalysis ? (
+    <div className="mt-4 space-y-4">
+      {/* QUALIFIED DISCOUNTS */}
+      <div className="border border-green-100 rounded-lg overflow-hidden">
+        <button 
+          onClick={() => toggleSection('qualified')}
+          className="w-full flex justify-between items-center p-3 bg-green-50 text-left focus:outline-none"
+        >
+          <h4 className="text-md font-semibold text-green-700">
+            ✅ Qualified Discounts 
+            <span className="ml-2 text-sm">
+              ({cartAnalysis.discountAnalysis.filter(a => a.qualificationStatus === 'QUALIFIED').length})
+            </span>
+          </h4>
+          <svg 
+            className={`w-5 h-5 text-green-700 transform transition-transform ${expandedSections.qualified ? 'rotate-180' : ''}`} 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        
+        {expandedSections.qualified && (
+          <div className="p-3">
+            {cartAnalysis.discountAnalysis
+              .filter(analysis => analysis.qualificationStatus === 'QUALIFIED')
+              .map((analysis, index) => (
+                <div key={index} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-100 mb-2">
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold text-gray-700">
+                      {analysis.discount.name}
+                    </h4>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {analysis.type === 'CATEGORY_GROSS_TOTAL' ? 
+                        `Spent ${analysis.currentAmount.toFixed(2)} AUD on ${analysis.categoryNames} (required: ${analysis.requiredAmount.toFixed(2)} AUD)` : 
+                        'Discount requirements met'}
+                    </p>
+                    {analysis.discount.description && (
+                      <p className="text-xs text-gray-500 mt-1 italic">
+                        {analysis.discount.description}
+                      </p>
+                    )}
+                  </div>
+                  <span className="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                    Applied
+                  </span>
+                </div>
+              ))}
+              
+            {!cartAnalysis.discountAnalysis.some(analysis => analysis.qualificationStatus === 'QUALIFIED') && (
+              <p className="text-grey-600 tracking-normal italic p-2">
+                No qualified discounts available
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+      
+      {/* PENDING DISCOUNTS */}
+      <div className="border border-orange-100 rounded-lg overflow-hidden">
+        <button 
+          onClick={() => toggleSection('pending')}
+          className="w-full flex justify-between items-center p-3 bg-orange-50 text-left focus:outline-none"
+        >
+          <h4 className="text-md font-semibold text-orange-700">
+            ⏳ Potential Discounts
+            <span className="ml-2 text-sm">
+              ({cartAnalysis.discountAnalysis.filter(a => a.qualificationStatus === 'PENDING').length})
+            </span>
+          </h4>
+          <svg 
+            className={`w-5 h-5 text-orange-700 transform transition-transform ${expandedSections.pending ? 'rotate-180' : ''}`} 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        
+        {expandedSections.pending && (
+          <div className="p-3">
+            {cartAnalysis.discountAnalysis
+              .filter(analysis => analysis.qualificationStatus === 'PENDING')
+              .map((analysis, index) => (
+                <div key={index} className="flex flex-col p-3 bg-white rounded-lg border border-gray-100 mb-2">
+                  <div className="flex items-start space-x-3">
                     <div className="flex-1">
                       <h4 className="text-lg font-semibold text-gray-700">
                         {analysis.discount.name}
                       </h4>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {analysis.qualificationMessage}
-                      </p>
+                      
+                      {/* For combined conditions, show both qualified and pending */}
+                      {analysis.type === 'COMBINED' ? (
+                        <div className="mt-2">
+                          {/* Show qualified conditions if any */}
+                          {analysis.qualifiedConditions && analysis.qualifiedConditions.length > 0 && (
+                            <div className="mb-2">
+                              <p className="text-sm font-medium text-green-700">Requirements Met:</p>
+                              <ul className="list-disc list-inside text-sm text-green-600 ml-2">
+                                {analysis.qualifiedConditions.map((condition, idx) => (
+                                  <li key={idx}>{condition}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          
+                          {/* Show pending conditions */}
+                          {analysis.pendingConditions && analysis.pendingConditions.length > 0 && (
+                            <div>
+                              <p className="text-sm font-medium text-orange-700">Requirements Needed:</p>
+                              <ul className="list-disc list-inside text-sm text-orange-600 ml-2">
+                                {analysis.pendingConditions.map((condition, idx) => (
+                                  <li key={idx}>{condition}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        // For simple conditions, just show the qualification message
+                        <p className="text-sm text-gray-600 mt-1">
+                          {analysis.qualificationMessage}
+                        </p>
+                      )}
+                      
+                      {analysis.discount.description && (
+                        <p className="text-xs text-gray-500 mt-1 italic">
+                          {analysis.discount.description}
+                        </p>
+                      )}
                     </div>
                     <span className="px-2 py-1 text-xs font-semibold text-orange-700 bg-orange-100 rounded-full">
                       Pending
                     </span>
                   </div>
-                ))}
-              {!cartAnalysis.discountAnalysis.some(analysis => analysis.qualificationStatus === 'PENDING') && (
-                <p className="text-grey-600 tracking-normal italic p-2">
-                  No potential discounts available at the moment
-                </p>
-              )}
-            </div>
-          ) : (
-            <p className="text-grey-600 tracking-normal italic p-2">
-              Loading potential discounts...
-            </p>
-          )}
-        </div>
+                </div>
+              ))}
+              
+            {!cartAnalysis.discountAnalysis.some(analysis => analysis.qualificationStatus === 'PENDING') && (
+              <p className="text-grey-600 tracking-normal italic p-2">
+                No potential discounts available
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+      
+      {/* NOT APPLICABLE DISCOUNTS */}
+      <div className="border border-gray-200 rounded-lg overflow-hidden">
+        <button 
+          onClick={() => toggleSection('notApplicable')}
+          className="w-full flex justify-between items-center p-3 bg-gray-50 text-left focus:outline-none"
+        >
+          <h4 className="text-md font-semibold text-gray-700">
+            ℹ️ Other Available Discounts
+            <span className="ml-2 text-sm">
+              ({cartAnalysis.discountAnalysis.filter(a => 
+                a.qualificationStatus === 'NOT_APPLICABLE' || a.qualificationStatus === 'UNKNOWN'
+              ).length})
+            </span>
+          </h4>
+          <svg 
+            className={`w-5 h-5 text-gray-700 transform transition-transform ${expandedSections.notApplicable ? 'rotate-180' : ''}`} 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        
+        {expandedSections.notApplicable && (
+          <div className="p-3">
+            {cartAnalysis.discountAnalysis
+              .filter(analysis => analysis.qualificationStatus === 'NOT_APPLICABLE' || analysis.qualificationStatus === 'UNKNOWN')
+              .map((analysis, index) => (
+                <div key={index} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-100 mb-2">
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold text-gray-700">
+                      {analysis.discount.name}
+                    </h4>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {analysis.type === 'CUSTOMER_GROUP' ? 
+                        'Available for specific customer groups only' : 
+                        analysis.type === 'UNKNOWN' ? 
+                        'Special discount with custom requirements' :
+                        analysis.qualificationMessage}
+                    </p>
+                    {analysis.discount.description && (
+                      <p className="text-xs text-gray-500 mt-1 italic">
+                        {analysis.discount.description}
+                      </p>
+                    )}
+                  </div>
+                  <span className="px-2 py-1 text-xs font-semibold text-gray-700 bg-gray-100 rounded-full">
+                    {analysis.qualificationStatus === 'UNKNOWN' ? 'Special' : 'Not Applicable'}
+                  </span>
+                </div>
+              ))}
+              
+            {!cartAnalysis.discountAnalysis.some(analysis => 
+              analysis.qualificationStatus === 'NOT_APPLICABLE' || analysis.qualificationStatus === 'UNKNOWN'
+            ) && (
+              <p className="text-grey-600 tracking-normal italic p-2">
+                No other discounts available
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  ) : (
+    <p className="text-grey-600 tracking-normal italic p-2">
+      Loading discount analysis...
+    </p>
+  )}
+</div>
 
 
 
@@ -291,7 +565,7 @@ cartData.lineItems.forEach(item => {
       </p>
     </div>
   )}
-  
+
   <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
     <span className="text-xl font-bold">Cart Total:</span>
     <span className="text-2xl font-bold">
