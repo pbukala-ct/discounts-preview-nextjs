@@ -11,7 +11,7 @@ const nextConfig = {
     },
     reactStrictMode: false,
     images: {
-      domains: ['images.cdn.australia-southeast1.gcp.commercetools.com','storage.googleapis.com','uk.elemis.com'],
+      domains: ['images.cdn.australia-southeast1.gcp.commercetools.com','storage.googleapis.com','uk.elemis.com','www.beaconlighting.com.au'],
     },
   }
 
