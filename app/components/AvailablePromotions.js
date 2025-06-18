@@ -33,7 +33,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
 
 
   const loadPromotions = async () => {
-    //console.log('Loading Discount Codes...');
+    console.log('Loading Discount Codes...');
     setIsLoading(true);
     try {
       const response = await apiRoot.discountCodes()
@@ -346,7 +346,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
                 <div className="mt-2 p-2">
                     {promo.includedDiscounts.length > 0 && (
                       <>
-                        <p className="text-sm font-medium text-gray-500 mb-1">Cart Discounts:</p>
+                        <p className="text-sm font-medium text-gray-500 mb-1">Discounts on cart total:</p>
                         {promo.includedDiscounts.map((discount, idx) => (
                           <p key={idx} className="text-xs text-gray-400">
                             {discount.name}: <span className="text-gray-500 font-semibold">{formatCurrency(discount.amount, currencyCode)}</span>
@@ -365,7 +365,7 @@ export default function AvailablePromotions({ cartData, onApplyDiscount, applied
                     )}
                   </div>
                 <div className="mt-2">
-              <p className="text-sm font-medium text-gray-500 mb-1 p-2">Product Discounts:</p>
+              <p className="text-sm font-medium text-gray-500 mb-1 p-2">Cart Discounts on Product Level:</p>
               <table className="w-full text-xs">
                 <thead>
                   <tr className="bg-gray-100">

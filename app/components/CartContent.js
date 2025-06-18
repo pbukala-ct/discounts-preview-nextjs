@@ -3,7 +3,7 @@ import { categoryService } from '../services/categoryService';
 import { cartAnalysisService } from '../services/cartAnalysisService';
 import { useState, useEffect } from 'react';
 
-export default function CartContent({ cartData, isLoading, onRemoveDiscount }) {
+export default function CartContent({ cartData, isLoading, onRemoveDiscount, onUpdateQuantity, updatingLineItems }) {
   const [openBreakdowns, setOpenBreakdowns] = useState({});
   const [cartAnalysis, setCartAnalysis] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -42,19 +42,34 @@ export default function CartContent({ cartData, isLoading, onRemoveDiscount }) {
       }
     }
 
-  
-
     analyzeCartData();
   }, [cartData]);
 
+  // NEW: Quantity update handlers
+  const handleQuantityIncrease = (lineItemId, currentQuantity) => {
+    if (onUpdateQuantity) {
+      onUpdateQuantity(lineItemId, currentQuantity + 1);
+    }
+  };
+
+  const handleQuantityDecrease = (lineItemId, currentQuantity) => {
+    if (onUpdateQuantity && currentQuantity > 1) {
+      onUpdateQuantity(lineItemId, currentQuantity - 1);
+    }
+  };
+
+  const handleQuantityInputChange = (lineItemId, newQuantity) => {
+    // Ensure quantity is at least 1
+    const validQuantity = Math.max(1, parseInt(newQuantity) || 1);
+    if (onUpdateQuantity) {
+      onUpdateQuantity(lineItemId, validQuantity);
+    }
+  };
 
 
-  // console.log('Cart Data: ',cartData)
-  // console.log('Categories:', cartAnalysis?.categories);
-  // console.log('Total Products:', cartAnalysis?.totalProducts);
-  // console.log('Auto Discounts:', cartAnalysis?.autoDiscounts);
-  // console.log('Applicable Discounts:', cartAnalysis?.applicableDiscounts);
-
+  const isLineItemUpdating = (lineItemId) => {
+    return updatingLineItems && updatingLineItems.has(lineItemId);
+  };
   
   const toggleBreakdown = (itemId) => {
     setOpenBreakdowns(prev => ({...prev, [itemId]: !prev[itemId]}));
@@ -79,6 +94,90 @@ export default function CartContent({ cartData, isLoading, onRemoveDiscount }) {
   const formatCurrency = (amount, currencyCode) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(amount / 100);
   };
+  
+  // ==================== DISCOUNT CALCULATIONS ====================
+  const calculateDiscountData = () => {
+    let totalCartDiscounts = 0;
+    let totalProductDiscounts = 0;
+    const cartDiscountMap = new Map();
+    const productDiscountMap = new Map();
+  
+    // Add cart-level discounts (if any exist at cart level)
+    if (cartData.discountOnTotalPrice?.discountedAmount?.centAmount) {
+      totalCartDiscounts += cartData.discountOnTotalPrice.discountedAmount.centAmount;
+      cartData.discountOnTotalPrice.includedDiscounts.forEach(discount => {
+        const name = discount.discount.obj?.name?.en || discount.discount.obj?.name["en-US"] || 'Unnamed Cart Discount';
+        cartDiscountMap.set(discount.discount.id, {
+          name: name,
+          amount: discount.discountedAmount.centAmount
+        });
+      });
+    }
+  
+    // Process each line item for discounts
+    cartData.lineItems.forEach(item => {
+      // Product discounts (per unit, multiply by quantity)
+      if (item.price.discounted) {
+        const productDiscountPerUnit = item.price.value.centAmount - item.price.discounted.value.centAmount;
+        const totalProductDiscountForItem = productDiscountPerUnit * item.quantity;
+        totalProductDiscounts += totalProductDiscountForItem;
+        
+        const discountId = item.price.discounted.discount.id;
+        const discountName = item.price.discounted.discount.obj?.name?.en || 
+                            item.price.discounted.discount.obj?.name["en-US"] || 
+                            'Product Discount';
+        
+        if (productDiscountMap.has(discountId)) {
+          productDiscountMap.get(discountId).amount += totalProductDiscountForItem;
+        } else {
+          productDiscountMap.set(discountId, {
+            name: discountName,
+            amount: totalProductDiscountForItem
+          });
+        }
+      }
+  
+    // Cart discounts on line items (per unit, multiply by the quantity that gets the discount)
+if (item.discountedPricePerQuantity && item.discountedPricePerQuantity.length > 0) {
+  item.discountedPricePerQuantity.forEach(priceQuantity => {
+    if (priceQuantity.discountedPrice.includedDiscounts) {
+      priceQuantity.discountedPrice.includedDiscounts.forEach(discount => {
+        // Multiply by the quantity that gets this specific discount
+        const totalDiscountForThisQuantity = discount.discountedAmount.centAmount * priceQuantity.quantity;
+        totalCartDiscounts += totalDiscountForThisQuantity;
+        
+        const discountId = discount.discount.id;
+        const discountName = discount.discount.obj?.name?.en || 
+                           discount.discount.obj?.name?.['en-US'] || 
+                           'Cart Discount';
+        
+        if (cartDiscountMap.has(discountId)) {
+          cartDiscountMap.get(discountId).amount += totalDiscountForThisQuantity;
+        } else {
+          cartDiscountMap.set(discountId, {
+            name: discountName,
+            amount: totalDiscountForThisQuantity
+          });
+        }
+      });
+    }
+  });
+}
+    });
+  
+    return {
+      totalCartDiscounts,
+      totalProductDiscounts,
+      cartDiscountMap,
+      productDiscountMap,
+      totalAllDiscounts: totalCartDiscounts + totalProductDiscounts
+    };
+  };
+  
+  // Calculate once at the top
+  const discountData = calculateDiscountData();
+  const subtotalWithoutDiscounts = cartData.totalPrice.centAmount + discountData.totalAllDiscounts;
+
 
   // Calculate total discount and collect all discounts
   let totalDiscount = 0;
@@ -117,6 +216,8 @@ cartData.lineItems.forEach(item => {
   }
 });
 
+console.log('cartData:', cartData);
+
   // Convert total discount to main currency unit
   totalDiscount = totalDiscount / 100;
 
@@ -125,7 +226,10 @@ cartData.lineItems.forEach(item => {
     <h2 className="text-xl font-semibold px-4 py-2 bg-indigo-600 text-gray-200 border-b-2 border-indigo-300">Your Cart</h2>
     <div className="p-6">
       <div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-        {cartData.lineItems.map((item) => (
+        {cartData.lineItems.map((item) => {
+          const isUpdating = isLineItemUpdating(item.id);
+          
+          return (
           <div key={item.id} className="mb-4 pb-4 border-b border-gray-200 last:border-b-0 flex items-start">
             <div className="mr-4 w-20 h-20 relative flex-shrink-0">
               <Image
@@ -138,54 +242,195 @@ cartData.lineItems.forEach(item => {
             </div>
             <div className="flex-grow">
             <h3 className="font-medium">{item.name['en-US'] || item.name['en-GB'] || item.name['en-AU']}</h3>
-            <p className="text-sm font-semibold text-gray-400 ">Retail Price: {formatCurrency(item.price.value.centAmount, item.price.value.currencyCode)}</p>
-<p className="text-base font-semibold text-indigo-600">Discounted Price: {formatCurrency(item.totalPrice.centAmount, item.totalPrice.currencyCode)}</p>
+            <p className="text-sm font-semibold text-gray-400 ">Retail Unit Price: {formatCurrency(item.price.value.centAmount, item.price.value.currencyCode)}</p>
+<p className="text-base font-semibold text-indigo-600">Discounted Price {formatCurrency(item.totalPrice.centAmount, item.totalPrice.currencyCode)}</p>
 
-        <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
-       {item.discountedPricePerQuantity && item.discountedPricePerQuantity.length > 0 && (
-              <>
-                <p className="text-sm text-green-800">
-                  Total Discount on item: {formatCurrency(item.price.value.centAmount - item.discountedPricePerQuantity[0].discountedPrice.value.centAmount, item.price.value.currencyCode)}
-                </p>
-                <button 
-                  className="text-xs text-blue-600 mt-1 focus:outline-none" 
-                  onClick={() => toggleBreakdown(item.id)}
-                >
-                  {openBreakdowns[item.id] ? 'Hide' : 'Show'} Discount Breakdown
-                </button>
-                {openBreakdowns[item.id] && (
-  <div className="mt-1 pl-2 border-l-2 border-gray-200">
-   
-    {item.price.discounted && (
-      
-      <p className="text-xs text-gray-500 bg-indigo-50 p-2 rounded-md mb-2">
-         <p className="text-sm font-medium text-indigo-700">Product Discount:</p>
-        {item.price.discounted.discount.obj.name.en}: <span className="text-indigo-600 font-bold">
-          {formatCurrency(
-            item.price.value.centAmount - item.price.discounted.value.centAmount,
-            item.price.value.currencyCode
-          )}
-        </span>
-      </p>
-    )}
-    <p className="text-sm font-medium text-gray-700">Cart Discounts:</p>
-    {item.discountedPricePerQuantity[0].discountedPrice.includedDiscounts.map((discount, idx) => (
-      <p key={idx} className="text-xs text-gray-500">
-        {discount.discount.obj.name.en}: <span className="text-gray-600 font-bold"> {formatCurrency(
-          discount.discountedAmount.centAmount,
-          discount.discountedAmount.currencyCode
-        )}</span>
-      </p>
-    ))}
-  </div>
-)}
-
-
-              </>
-            )}
-</div>
+        {/* NEW: Quantity Controls */}
+        <div className="flex items-center mt-3 space-x-3">
+          <span className="text-sm text-gray-600 font-medium">Quantity:</span>
+          
+          {/* Quantity Control Buttons */}
+          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+            {/* Decrease Button */}
+            <button
+              onClick={() => handleQuantityDecrease(item.id, item.quantity)}
+              disabled={item.quantity <= 1 || isUpdating}
+              className={`px-3 py-1 text-lg font-semibold transition-colors ${
+                item.quantity <= 1 || isUpdating
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:bg-gray-200'
+              }`}
+            >
+              −
+            </button>
+            
+            {/* Quantity Display/Input */}
+            <div className="relative">
+              <input
+                type="number"
+                min="1"
+                value={item.quantity}
+                onChange={(e) => handleQuantityInputChange(item.id, e.target.value)}
+                disabled={isUpdating}
+                className={`w-16 px-2 py-1 text-center text-sm font-semibold border-0 border-l border-r border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+                  isUpdating ? 'bg-gray-100 text-gray-500' : 'bg-white text-gray-900'
+                }`}
+              />
+              
+              {/* Loading Overlay */}
+              {isUpdating && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
+                  <svg className="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+              )}
+            </div>
+            
+            {/* Increase Button */}
+            <button
+              onClick={() => handleQuantityIncrease(item.id, item.quantity)}
+              disabled={isUpdating}
+              className={`px-3 py-1 text-lg font-semibold transition-colors ${
+                isUpdating
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100 active:bg-gray-200'
+              }`}
+            >
+              +
+            </button>
           </div>
-        ))}
+          
+          {/* Loading Text */}
+          {isUpdating && (
+            <span className="text-xs text-indigo-600 font-medium">Updating...</span>
+          )}
+        </div>
+
+    {/* Check for any type of discount - either discountedPricePerQuantity OR product discount */}
+{((item.discountedPricePerQuantity && item.discountedPricePerQuantity.length > 0) || item.price.discounted) && (
+  <>
+    {/* Calculate total discount per unit */}
+    {(() => {
+      let unitDiscountAmount = 0;
+      
+      // Product discount per unit
+      if (item.price.discounted) {
+        unitDiscountAmount += item.price.value.centAmount - item.price.discounted.value.centAmount;
+      }
+      
+      // Cart discounts per unit - FIXED: Handle multiple discount groups
+      if (item.discountedPricePerQuantity && item.discountedPricePerQuantity.length > 0) {
+        const cartDiscountPerUnit = item.discountedPricePerQuantity.reduce((total, priceQuantity) => {
+          const discountSum = priceQuantity.discountedPrice.includedDiscounts?.reduce((sum, discount) => {
+            return sum + discount.discountedAmount.centAmount;
+          }, 0) || 0;
+          return total + discountSum;
+        }, 0);
+        unitDiscountAmount += cartDiscountPerUnit;
+      }
+      
+      const totalDiscountAmount = unitDiscountAmount * item.quantity;
+      const unitDiscountedPrice = item.price.value.centAmount - unitDiscountAmount;
+      
+      return (
+        <>
+          {/* Unit Pricing Information */}
+          <div className="mt-2 space-y-1 pb-2 border-b border-gray-200">
+            <p className="text-sm font-semibold text-gray-700">
+              Discounted Unit Price: <span className="text-indigo-600">{formatCurrency(unitDiscountedPrice, item.price.value.currencyCode)}</span>
+            </p>
+            <p className="text-sm text-green-700">
+              Discount per unit: <span className="font-bold">{formatCurrency(unitDiscountAmount, item.price.value.currencyCode)}</span>
+            </p>
+          </div>
+          
+          {/* Total Pricing Information */}
+          <div className="mt-2 space-y-1">
+            <p className="text-sm font-semibold text-gray-700">
+              Price for all {item.quantity} items: <span className="text-indigo-600">{formatCurrency(item.totalPrice.centAmount, item.price.value.currencyCode)}</span>
+            </p>
+            <p className="text-sm text-green-800">
+              Total Discounts: <span className="font-bold">{formatCurrency(totalDiscountAmount, item.price.value.currencyCode)}</span>
+            </p>
+          </div>
+          
+          <button 
+            className="text-xs text-blue-600 mt-2 focus:outline-none" 
+            onClick={() => toggleBreakdown(item.id)}
+          >
+            {openBreakdowns[item.id] ? 'Hide' : 'Show'} Discount Breakdown
+          </button>
+          
+          {openBreakdowns[item.id] && (
+            <div className="mt-2 pl-3 border-l-2 border-gray-200 space-y-2">
+              {/* Product Discount Section */}
+              {item.price.discounted && (
+                <div className="bg-indigo-50 p-2 rounded-md">
+                  <p className="text-sm font-medium text-indigo-700 mb-1">Product Discount:</p>
+                  <div className="text-xs space-y-1">
+                    <p className="text-gray-600">
+                      {item.price.discounted.discount.obj.name.en || item.price.discounted.discount.obj.name["en-US"] || 'Product Discount'}:
+                    </p>
+                    <p className="ml-2">
+                      <span className="text-gray-500">Per unit:</span> <span className="text-indigo-600 font-bold">
+                        {formatCurrency(item.price.value.centAmount - item.price.discounted.value.centAmount, item.price.value.currencyCode)}
+                      </span>
+                    </p>
+                    <p className="ml-2">
+                      <span className="text-gray-500">Total ({item.quantity} units):</span> <span className="text-indigo-600 font-bold">
+                        {formatCurrency((item.price.value.centAmount - item.price.discounted.value.centAmount) * item.quantity, item.price.value.currencyCode)}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {/* Cart Discounts Section - FIXED: Handle multiple discount groups and correct quantities */}
+              {item.discountedPricePerQuantity && item.discountedPricePerQuantity.length > 0 && (
+                <div className="bg-gray-50 p-2 rounded-md">
+                  <p className="text-sm font-medium text-gray-700 mb-1">Cart Discounts:</p>
+                  <div className="text-xs space-y-1">
+                    {item.discountedPricePerQuantity.map((priceQuantity, groupIdx) => 
+                      priceQuantity.discountedPrice.includedDiscounts?.map((discount, idx) => (
+                        <div key={`${groupIdx}-${idx}`}>
+                          <p className="text-gray-600">
+                            {discount.discount.obj.name.en || discount.discount.obj.name["en-US"] || 'Cart Discount'}:
+                          </p>
+                          <p className="ml-2">
+                            <span className="text-gray-500">Per unit:</span> <span className="text-gray-600 font-bold">
+                              {formatCurrency(discount.discountedAmount.centAmount, discount.discountedAmount.currencyCode)}
+                            </span>
+                          </p>
+                          <p className="ml-2">
+                            <span className="text-gray-500">Total ({priceQuantity.quantity} units):</span> <span className="text-gray-600 font-bold">
+                              {formatCurrency(discount.discountedAmount.centAmount * priceQuantity.quantity, discount.discountedAmount.currencyCode)}
+                            </span>
+                          </p>
+                        </div>
+                      )) || []
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {/* No Cart Discounts Message */}
+              {(!item.discountedPricePerQuantity || item.discountedPricePerQuantity.length === 0) && (
+                <div className="bg-gray-50 p-2 rounded-md">
+                  <p className="text-sm font-medium text-gray-700 mb-1">Cart Discounts:</p>
+                  <p className="text-xs text-gray-500 italic">No cart discounts applied</p>
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      );
+    })()}
+  </>
+)}</div>
+          </div>
+        )})}
       </div>
 
 
@@ -516,33 +761,88 @@ cartData.lineItems.forEach(item => {
         <div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
         {/* <h3 className="text-lg font-semibold px-2 py-2 bg-grey-500 text-gray-200 border-b-2 border-indigo-300">All Applied Discounts:</h3> */}
         <h3 className="text-lg font-semibold px-4 py-2 bg-grey-50 text-indigo-700 border-b-2 border-indigo-300">All Applied Discounts Total:</h3>
-          {discounts.size > 0 ? (
-            <ul className="space-y-2">
-              {Array.from(discounts.values()).map((discount, index) => (
-                <li key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                  <span className="flex items-center text-lg font-extrabold text-gray-700">{discount.name}</span>
-                  <span className="flex items-center text-lg font-extrabold text-gray-700">{formatCurrency(discount.amount, cartData.totalPrice.currencyCode)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-grey-600 tracking-normal italic p-2">No discounts applied</p>
-          )}
+        {discountData.totalAllDiscounts > 0 ? (
+  <div className="space-y-4 mt-4">
+    {/* Product Discounts Section */}
+    {discountData.productDiscountMap.size > 0 && (
+      <div>
+        <h4 className="text-md font-semibold text-indigo-600 mb-2">Product Discounts:</h4>
+        <ul className="space-y-2 ml-4">
+          {Array.from(discountData.productDiscountMap.values()).map((discount, index) => (
+            <li key={index} className="flex justify-between items-center bg-indigo-50 p-2 rounded">
+              <span className="flex items-center text-sm font-semibold text-gray-700">{discount.name}</span>
+              <span className="flex items-center text-sm font-bold text-indigo-600">
+                {formatCurrency(discount.amount, cartData.totalPrice.currencyCode)}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className="flex justify-between items-center mt-2 pt-2 border-t border-indigo-200 ml-4">
+          <span className="text-sm font-semibold text-indigo-700">Product Discounts Subtotal:</span>
+          <span className="text-sm font-bold text-indigo-700">
+            {formatCurrency(discountData.totalProductDiscounts, cartData.totalPrice.currencyCode)}
+          </span>
+        </div>
+      </div>
+    )}
+
+    {/* Cart Discounts Section */}
+    {discountData.cartDiscountMap.size > 0 && (
+      <div>
+        <h4 className="text-md font-semibold text-green-600 mb-2">Cart Discounts:</h4>
+        <ul className="space-y-2 ml-4">
+          {Array.from(discountData.cartDiscountMap.values()).map((discount, index) => (
+            <li key={index} className="flex justify-between items-center bg-green-50 p-2 rounded">
+              <span className="flex items-center text-sm font-semibold text-gray-700">{discount.name}</span>
+              <span className="flex items-center text-sm font-bold text-green-600">
+                {formatCurrency(discount.amount, cartData.totalPrice.currencyCode)}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className="flex justify-between items-center mt-2 pt-2 border-t border-green-200 ml-4">
+          <span className="text-sm font-semibold text-green-700">Cart Discounts Subtotal:</span>
+          <span className="text-sm font-bold text-green-700">
+            {formatCurrency(discountData.totalCartDiscounts, cartData.totalPrice.currencyCode)}
+          </span>
+        </div>
+      </div>
+    )}
+
+    {/* Total Discounts */}
+    <div className="flex justify-between items-center mt-4 pt-4 border-t-2 border-gray-300 bg-gray-100 p-3 rounded">
+      <span className="text-lg font-bold text-gray-800">Total All Discounts:</span>
+      <span className="text-lg font-bold text-gray-800">
+        {formatCurrency(discountData.totalAllDiscounts, cartData.totalPrice.currencyCode)}
+      </span>
+    </div>
+  </div>
+) : (
+  <p className="text-grey-600 tracking-normal italic p-2">No discounts applied</p>
+)}
         </div>
 
-        <div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+  <div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+  <div className="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
   <div className="flex justify-between items-center mb-2">
-    <span className="text-lg text-gray-700 font-semibold">Subtotal: (without discounts)</span>
+    <span className="text-lg text-gray-700 font-semibold">Subtotal (without discounts):</span>
     <span className="text-lg font-semibold">
-      {formatCurrency(cartData.totalPrice.centAmount + totalDiscount * 100, cartData.totalPrice.currencyCode)}
+      {formatCurrency(subtotalWithoutDiscounts, cartData.totalPrice.currencyCode)}
     </span>
   </div>
   <div className="flex justify-between items-center mb-2 text-green-600">
     <span className="text-lg font-bold text-gray-700">Total Discount:</span>
-    <span className="text-lg font-bold ">
-      -{formatCurrency(totalDiscount * 100, cartData.totalPrice.currencyCode)}
+    <span className="text-lg font-bold">
+      -{formatCurrency(discountData.totalAllDiscounts, cartData.totalPrice.currencyCode)}
     </span>
   </div>
+  <div className="flex justify-between items-center mb-4 pt-2 border-t border-gray-300">
+    <span className="text-xl font-bold text-gray-800">Cart Total:</span>
+    <span className="text-xl font-bold text-gray-800">
+      {formatCurrency(cartData.totalPrice.centAmount, cartData.totalPrice.currencyCode)}
+    </span>
+  </div>
+</div>
 
   {/* Discount Type Combination Info */}
   {cartData.discountTypeCombination && (
@@ -566,12 +866,12 @@ cartData.lineItems.forEach(item => {
     </div>
   )}
 
-  <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+  {/* <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
     <span className="text-xl font-bold">Cart Total:</span>
     <span className="text-2xl font-bold">
       {formatCurrency(cartData.totalPrice.centAmount, cartData.totalPrice.currencyCode)}
     </span>
-  </div>
+  </div> */}
 </div>
       </div>
     </div>

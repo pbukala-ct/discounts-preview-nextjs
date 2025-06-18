@@ -16,12 +16,9 @@ export default function Home() {
   const [applyBestPromo, setApplyBestPromo] = useState(false);
   const [appliedDiscountCodes, setAppliedDiscountCodes] = useState([]);
 
+  // Feature june25: Adding state for tracking quantity updates
+  const [updatingLineItems, setUpdatingLineItems] = useState(new Set());
 
-
-
-  // useEffect(() => {
-  //   loadCartData();
-  // }, []);
 
   const loadCartData = async (customerId, applyBestPromo) => {
     if (!customerId || typeof customerId !== 'string' || customerId.trim() === '') {
@@ -78,7 +75,6 @@ export default function Home() {
       setCartData(null);
       setAppliedDiscountCodes([]);
       
-      // Log the technical error for debugging
       console.error('Technical error details:', error);
     } finally {
       setIsLoading(false);
@@ -86,6 +82,72 @@ export default function Home() {
   };
 
 
+  const updateLineItemQuantity = useCallback(async (lineItemId, newQuantity) => {
+    if (!cartData) {
+      console.error('No cart data available');
+      return;
+    }
+
+    // Add this line item to updating set
+    setUpdatingLineItems(prev => new Set([...prev, lineItemId]));
+    setError(null);
+
+    try {
+      console.log(`Updating line item ${lineItemId} to quantity ${newQuantity}`);
+      
+      const response = await apiRoot
+        .carts()
+        .withId({ ID: cartData.id })
+        .post({
+          queryArgs: {
+            expand: ['discountCodes[*].discountCode', 'discountOnTotalPrice.includedDiscounts[*].discount','lineItems[*].discountedPricePerQuantity[*].discountedPrice.includedDiscounts[*].discount','lineItems[*].price.discounted.discount'],
+          },
+          body: {
+            version: cartData.version,
+            actions: [
+              {
+                action: "changeLineItemQuantity",
+                lineItemId: lineItemId,
+                quantity: newQuantity
+              }
+            ]
+          }
+        })
+        .execute();
+
+      // Update cart data with the response
+      setCartData(response.body);
+      
+      // Update applied discount codes in case they changed
+      const appliedCodes = response.body.discountCodes 
+        ? response.body.discountCodes.map(dc => dc.discountCode.obj.code)
+        : [];
+      setAppliedDiscountCodes(appliedCodes);
+
+      console.log('Line item quantity updated successfully');
+
+    } catch (err) {
+      console.error('Error updating line item quantity:', err);
+      let userMessage = 'Failed to update quantity. ';
+      
+      if (err.statusCode === 409) {
+        userMessage += 'Cart was modified by another process. Please refresh and try again.';
+      } else {
+        userMessage += 'Please try again.';
+      }
+      
+      setError(userMessage);
+    } finally {
+      // Remove this line item from updating set
+      setUpdatingLineItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(lineItemId);
+        return newSet;
+      });
+    }
+  }, [cartData]);
+
+  // ... existing applyDiscountCode function remains the same ...
   const applyDiscountCode = useCallback(async (discountCode) => {
     setApplyBestPromo(false);
     setIsLoading(true);
@@ -127,6 +189,7 @@ export default function Home() {
     }
   }, [cartData, setCartData]);
 
+  // ... existing removeDiscountCode function remains the same ...
   const removeDiscountCode = async (discountCodeId) => {
     setApplyBestPromo(false);
 
@@ -174,8 +237,6 @@ export default function Home() {
     }
   };
 
-  // Remove or modify these conditions
-
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="container mx-auto py-4 px-4">
@@ -194,7 +255,13 @@ export default function Home() {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
           <div className="md:col-span-3">
-            <CartContent cartData={cartData} isLoading={isLoading} onRemoveDiscount={removeDiscountCode}/>
+            <CartContent 
+              cartData={cartData} 
+              isLoading={isLoading} 
+              onRemoveDiscount={removeDiscountCode}
+              onUpdateQuantity={updateLineItemQuantity}
+              updatingLineItems={updatingLineItems}
+            />
           </div>
           <div className="md:col-span-3 space-y-8">
             <AvailablePromotions 
