@@ -371,7 +371,7 @@ console.log('cartData:', cartData);
                   <p className="text-sm font-medium text-indigo-700 mb-1">Product Discount:</p>
                   <div className="text-xs space-y-1">
                     <p className="text-gray-600">
-                      {item.price.discounted.discount.obj.name.en || item.price.discounted.discount.obj.name["en-US"] || 'Product Discount'}:
+                      {item.price.discounted.discount.obj.name.en || discount.discount.obj.name["en-US"] || discount.discount.obj.name["en-AU"]   || 'Product Discount'}:
                     </p>
                     <p className="ml-2">
                       <span className="text-gray-500">Per unit:</span> <span className="text-indigo-600 font-bold">
@@ -396,7 +396,7 @@ console.log('cartData:', cartData);
                       priceQuantity.discountedPrice.includedDiscounts?.map((discount, idx) => (
                         <div key={`${groupIdx}-${idx}`}>
                           <p className="text-gray-600">
-                            {discount.discount.obj.name.en || discount.discount.obj.name["en-US"] || 'Cart Discount'}:
+                            {discount.discount.obj.name.en || discount.discount.obj.name["en-US"] || discount.discount.obj.name["en-AU"]  || 'Cart Discount'}:
                           </p>
                           <p className="ml-2">
                             <span className="text-gray-500">Per unit:</span> <span className="text-gray-600 font-bold">
