@@ -378,12 +378,17 @@ class DiscountGroupsService {
      */
     async removeCartDiscountFromGroup(cartDiscountId, version) {
       try {
+        // Generate random sortOrder between 0-1 with 9 decimal digits
+        const sortOrder = (Math.random()).toFixed(9);
+
         const body = {
           version,
           actions: [
             {
               action: 'setDiscountGroup',
+              sortOrder: sortOrder.toString(),
               discountGroup: null
+              
             }
           ]
         };
