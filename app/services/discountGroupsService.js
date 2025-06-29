@@ -10,7 +10,7 @@ class DiscountGroupsService {
       this.authUrl = process.env.NEXT_PUBLIC_CTP_AUTH_URL;
       this.clientId = process.env.CTP_CLIENT_ID;
       this.clientSecret = process.env.CTP_CLIENT_SECRET;
-      this.scope = process.env.NEXT_PUBLIC_CTP_SCOPE;
+      this.scope = process.env.NEXT_PUBLIC_CTP_SCOPES;
       
       this.accessToken = null;
       this.tokenExpiresAt = null;
