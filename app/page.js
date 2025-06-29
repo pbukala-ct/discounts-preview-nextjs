@@ -2,12 +2,12 @@
 import { apiRoot } from './commercetools-client'
 import Image from 'next/image';
 
-import { useState,useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import CartContent from './components/CartContent';
 import AvailablePromotions from './components/AvailablePromotions';
 import AutoTriggeredPromotions from './components/AutoTriggeredPromotions';
+import DiscountGroupsManagement from './components/DiscountGroupsManagement';
 import CartIdForm from './components/CartIdForm'
-
 
 export default function Home() {
   const [cartData, setCartData] = useState(null);
@@ -15,10 +15,10 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [applyBestPromo, setApplyBestPromo] = useState(false);
   const [appliedDiscountCodes, setAppliedDiscountCodes] = useState([]);
+  const [activeTab, setActiveTab] = useState('cart-preview'); // 'cart-preview' or 'discount-groups'
 
   // Feature june25: Adding state for tracking quantity updates
   const [updatingLineItems, setUpdatingLineItems] = useState(new Set());
-
 
   const loadCartData = async (customerId, applyBestPromo) => {
     if (!customerId || typeof customerId !== 'string' || customerId.trim() === '') {
@@ -80,7 +80,6 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-
 
   const updateLineItemQuantity = useCallback(async (lineItemId, newQuantity) => {
     if (!cartData) {
@@ -147,7 +146,6 @@ export default function Home() {
     }
   }, [cartData]);
 
-  // ... existing applyDiscountCode function remains the same ...
   const applyDiscountCode = useCallback(async (discountCode) => {
     setApplyBestPromo(false);
     setIsLoading(true);
@@ -189,7 +187,6 @@ export default function Home() {
     }
   }, [cartData, setCartData]);
 
-  // ... existing removeDiscountCode function remains the same ...
   const removeDiscountCode = async (discountCodeId) => {
     setApplyBestPromo(false);
 
@@ -251,28 +248,62 @@ export default function Home() {
           />
         </header>
 
-        <CartIdForm onSubmit={loadCartData} />
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
-          <div className="md:col-span-3">
-            <CartContent 
-              cartData={cartData} 
-              isLoading={isLoading} 
-              onRemoveDiscount={removeDiscountCode}
-              onUpdateQuantity={updateLineItemQuantity}
-              updatingLineItems={updatingLineItems}
-            />
-          </div>
-          <div className="md:col-span-3 space-y-8">
-            <AvailablePromotions 
-            cartData={cartData} 
-            onApplyDiscount={applyDiscountCode} 
-            applyBestPromoAutomatically={applyBestPromo}
-            appliedDiscountCodes={appliedDiscountCodes}
-            />
-            <AutoTriggeredPromotions />
+        {/* Tab Navigation */}
+        <div className="mb-6">
+          <div className="border-b border-gray-200">
+            <nav className="flex space-x-8 justify-center">
+              <button
+                onClick={() => setActiveTab('cart-preview')}
+                className={`py-4 px-6 border-b-2 font-medium text-lg ${
+                  activeTab === 'cart-preview'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Cart Discount Preview
+              </button>
+              <button
+                onClick={() => setActiveTab('discount-groups')}
+                className={`py-4 px-6 border-b-2 font-medium text-lg ${
+                  activeTab === 'discount-groups'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Discount Groups Management
+              </button>
+            </nav>
           </div>
         </div>
+
+        {activeTab === 'cart-preview' ? (
+          <>
+            <CartIdForm onSubmit={loadCartData} />
+            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
+              <div className="md:col-span-3">
+                <CartContent 
+                  cartData={cartData} 
+                  isLoading={isLoading} 
+                  onRemoveDiscount={removeDiscountCode}
+                  onUpdateQuantity={updateLineItemQuantity}
+                  updatingLineItems={updatingLineItems}
+                />
+              </div>
+              <div className="md:col-span-3 space-y-8">
+                <AvailablePromotions 
+                  cartData={cartData} 
+                  onApplyDiscount={applyDiscountCode} 
+                  applyBestPromoAutomatically={applyBestPromo}
+                  appliedDiscountCodes={appliedDiscountCodes}
+                />
+                <AutoTriggeredPromotions />
+              </div>
+            </div>
+          </>
+        ) : (
+          <DiscountGroupsManagement />
+        )}
       </div>
     </div>
   );

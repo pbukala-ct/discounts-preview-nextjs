@@ -1,6 +1,6 @@
 {
   "name": "promo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3003",
@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@commercetools/platform-sdk": "^7.10.0-alpha-customer-groups.2",
-    "@commercetools/sdk-client-v2": "^2.5.0",
+    "@commercetools/platform-sdk": "^8.11.0",
+    "@commercetools/sdk-client-v2": "^3.0.0",
     "dotenv": "^16.4.5",
     "next": "14.2.4",
     "react": "^18",
